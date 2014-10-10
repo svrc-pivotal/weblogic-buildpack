@@ -19,7 +19,7 @@
 # e.g.  repository_root: "http://example.com/oracle-wls/{platform}/{architecture}"
 
 version: 12.1.+
-repository_root: "https://12.1.1.1:7777/fileserver/wls"
+repository_root: "http://12.1.1.1:7777/fileserver/wls"
 
 # prefer_app_config - Use the App bundled configs over the buildpack bundled configs?
 # If set to true, all configs and scripts packaged with the app bundle will be used for domain and server creation.
@@ -33,3 +33,9 @@ prefer_app_config: true
 # If false, this would start the server in full blown mode - enabling JMS, JCA and EJBs.
 start_in_wlx_mode: false
 
+
+# prefer_root_web_context - Change web app to use '/' as context root?
+# If set to true, weblogic.xml file would be modified in the bundled web app to use root context ('/').
+# If set to false, no changes, would use whatever context was specified within the app.
+# Only works against webapp/WAR files, not against EAR as there can be multiple webapps bundled within same EAR
+prefer_root_web_context: true

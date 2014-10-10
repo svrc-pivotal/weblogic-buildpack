@@ -47,7 +47,7 @@ Example:
        ```
 
 
-Sample Multipool jdbc config (from [jdbcDatasource1](resources/wls/jdbc/jdbcDatasource1.yml)
+Sample Multipool jdbc config (from [jdbcDatasource1](../resources/wls/jdbc/jdbcDatasource1.yml)
 
 ```
 # Configuration for the WebLogic JDBC Datasources

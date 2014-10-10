@@ -37,7 +37,7 @@ The Domain name and server names would be auto-configured based on the name of t
 The parameters are used by the buildpack during creation of the domain using the wlst script provided along with the application.
 Presence of this file along with the script is mandatory for creation of the WebLogic Domain.
 
-Sample domain config (from [wlsDomainConfig.yml](resources/wls/wlsDomainConfig.yml)
+Sample domain config (from [wlsDomainConfig.yml](../resources/wls/wlsDomainConfig.yml)
 ```
 
 # Configuration for the WebLogic Domain

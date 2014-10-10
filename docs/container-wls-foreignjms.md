@@ -39,7 +39,7 @@ There can be multiple config files under the foreignjms folder.
 Tweak the WLST Script if there is need for additional configuration changes.
 
 
-Sample foreign jms config (from [foreignJmsConfig.yml](resources/wls/foreignjms/foreignJmsConfig.yml) )
+Sample foreign jms config (from [foreignJmsConfig.yml](../resources/wls/foreignjms/foreignJmsConfig.yml) )
 
 ```
 

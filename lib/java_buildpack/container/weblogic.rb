@@ -33,6 +33,7 @@ require 'java_buildpack/container/wls/wls_util'
 
 require 'yaml'
 require 'tmpdir'
+require 'rexml/document'
 
 module JavaBuildpack
   module Container
@@ -50,8 +51,9 @@ module JavaBuildpack
           @wls_version, @wls_uri = JavaBuildpack::Repository::ConfiguredItem
           .find_item(@component_name, @configuration) { |candidate_version| candidate_version.check_size(3) }
 
-          @prefer_app_config = @configuration[PREFER_APP_CONFIG]
-          @start_in_wlx_mode = @configuration[START_IN_WLX_MODE]
+          @prefer_app_config       = @configuration[PREFER_APP_CONFIG]
+          @start_in_wlx_mode       = @configuration[START_IN_WLX_MODE]
+          @prefer_root_web_context = @configuration[PREFER_ROOT_WEB_CONTEXT]
 
           # Proceed with install under the APP-INF or WEB-INF folders
 
@@ -92,9 +94,12 @@ module JavaBuildpack
       def compile
         download_and_install_wls
         configure
-        # The App directory would be directly targeted rather than via a dummy ROOT app
-        # and contents linking back to the source apps
-        # link_to(@application.root.children, deployed_app_root)
+
+        # Don't modify context root for wars within Ear as there can be multiple wars.
+        # Modify the context root to '/' in case of war
+        # and prefer_root_web_context is enabled in buildpack weblogic.yml config
+        modify_context_root_for_war if web_inf? && @prefer_root_web_context
+
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
@@ -283,25 +288,6 @@ module JavaBuildpack
         configurer.configure
       end
 
-      # def link_application
-      #   FileUtils.rm_rf deployed_app_root
-      #   FileUtils.mkdir_p deployed_app_root
-      #   @application.children.each { |child| FileUtils.cp_r child, deployed_app_root }
-      # end
-
-      # def link_to(source, destination)
-      #   FileUtils.mkdir_p destination
-      #   source.each do |path|
-      #     # Ignore the .java-buildpack log and .java-buildpack subdirectory as well as .wls/.monitor
-      #     # and anything else not related to the app bits
-      #     next if path.to_s[/\.java-buildpack/]
-      #     next if path.to_s[/\.monitor/]
-      #     next if path.to_s[/\.wls/]
-      #     next if path.to_s[/\wlsInstall/]
-      #     (destination + path.basename).make_symlink(path.relative_path_from(destination))
-      #   end
-      # end
-
       def configure_names_from_env
         vcap_application_env_value = ENV['VCAP_APPLICATION']
 
@@ -327,6 +313,21 @@ module JavaBuildpack
 
       def app_inf?
         (@application.root + 'APP-INF').exist? || (@application.root + 'META-INF/application.xml').exist?
+      end
+
+      def modify_context_root_for_war
+        weblogic_xml = Dir.glob("#{@application.root}/*/weblogic.xml")[0]
+
+        return unless weblogic_xml
+
+        doc = REXML::Document.new(File.new(weblogic_xml))
+        doc.root.elements.each { |element| element.text = '/' if element.name[/context-root/] }
+
+        File.open(weblogic_xml, 'w') do |file|
+          file.write(doc.to_s)
+          file.fsync
+        end
+
       end
 
       # Create a folder

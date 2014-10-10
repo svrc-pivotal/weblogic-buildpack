@@ -8,7 +8,7 @@ It also manages some configurations used for the WLS Domain creation.
    * The WebLogic Server release bits and jdk binaries should be accessible for download from a server (can be internal or public facing) for the buildpack to create the necessary configurations along with the app bits.
      Download the [Linux 64 bit JRE][] version and [WebLogic Server][] generic version.
 
-   * Edit the repository_root of [weblogic.yml](config/weblogic.yml) to point to the server hosting the weblogic binary.
+   * Edit the repository_root of [weblogic.yml](../config/weblogic.yml) to point to the server hosting the weblogic binary.
 
      Sample `repository_root` for weblogic.yml (under weblogic-buildpack/config)
 
@@ -48,7 +48,7 @@ It also manages some configurations used for the WLS Domain creation.
         ```
 
   Setting the  **`prefer_app_config`** to **`true`** would imply the app bundled configs (under .wls of the App Root) would always be used for final domain creation.
-  Setting the parameter to **`false`** would imply the buildpack's configurations (under resources\wls\) have higher precedence over the app bundled configs and be used to configure the domain.
+  Setting the parameter to **`false`** would imply the buildpack's configurations (under resources/wls/) have higher precedence over the app bundled configs and be used to configure the domain.
   The Application supplied domain config and jvm config file would be used for names of the domain, server, user credentials and jvm memory and command line settings.
   The script for the domain creation would however come from the buildpack.
 
@@ -71,6 +71,19 @@ It also manages some configurations used for the WLS Domain creation.
 
   Please refer to the WebLogic server documentation on the [limited footprint][] option for more details.
 
+  * The **`prefer_root_web_context`** parameter allows reconfiguring the web application to use root ('/') context.
+
+            ```
+            version: 12.1.+
+            repository_root: http://12.1.1.1:7777/fileserver/wls
+            prefer_app_config: false
+            start_in_wlx_mode: false
+            prefer_root_web_context: true
+
+            ```
+
+  This property only applies to WAR/exploded web application deployments and not to Enterprise (EAR) Applications.
+  It defaults to true.
 
 [Linux 64 bit JRE]: http://javadl.sun.com/webapps/download/AutoDL?BundleId=83376
 [WebLogic Server]: http://www.oracle.com/technetwork/middleware/weblogic/downloads/index.html

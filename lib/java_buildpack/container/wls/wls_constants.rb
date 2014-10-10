@@ -41,6 +41,9 @@ module JavaBuildpack
         # Prefer App Bundled Config or Buildpack bundled Config
         START_IN_WLX_MODE    = 'start_in_wlx_mode'.freeze
 
+        # Prefer Root as web app context
+        PREFER_ROOT_WEB_CONTEXT = 'prefer_root_web_context'.freeze
+
         # Parent Location to save/store the application during deployment
         DOMAIN_APPS_FOLDER   = 'apps'.freeze
 

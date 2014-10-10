@@ -54,7 +54,7 @@ Sample output logged in the **`.java-buildpack.log`** (created under the explode
 
 ```
 
-A sample domain creation script is bundled with the buildpack ([wlsDomainCreate.py](resources/wls/script/wlsDomainCreate.yml) .
+A sample domain creation script is bundled with the buildpack ([wlsDomainCreate.py](../resources/wls/script/wlsDomainCreate.yml) .
 The parameter in the script and the config files are bound tightly to each other. Changes to the parameters in the config files can break the script and vice-versa.
 
 Wrong alignments in conditional blocks or mix-up of String and Int parameters can break the WLST execution without clear error messages.

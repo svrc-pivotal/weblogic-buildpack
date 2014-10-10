@@ -48,7 +48,7 @@ Example:
 
        ```
 
-Sample jms config (from [jmsConfig.yml](resources/wls/jms/jmsConfig.yml)
+Sample jms config (from [jmsConfig.yml](../resources/wls/jms/jmsConfig.yml)
 
 ```
 

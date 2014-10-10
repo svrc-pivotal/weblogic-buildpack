@@ -83,7 +83,7 @@ The container can be configured by modifying the [`config/weblogic.yml`][] file 
 
      ```
 
-   * Edit the repository_root of [oracle_jre.yml](config/oracle_jre.yml) to point to the location hosting the Oracle JRE binary.
+   * Edit the repository_root of [oracle_jre.yml](../config/oracle_jre.yml) to point to the location hosting the Oracle JRE binary.
    
      Sample **`repository_root`** for oracle_jre.yml (under weblogic-buildpack/config)
      
@@ -100,7 +100,7 @@ The container can be configured by modifying the [`config/weblogic.yml`][] file 
        ```
        Ensure the JRE binary is available at the location indicated by the index.yml referred by the jre repository_root
 
-   * Edit the repository_root of [weblogic.yml](config/weblogic.yml) to point to the server hosting the WebLogic binary.
+   * Edit the repository_root of [weblogic.yml](../config/weblogic.yml) to point to the server hosting the WebLogic binary.
 
      Sample **`repository_root`** for weblogic.yml (under weblogic-buildpack/config)
 
@@ -124,7 +124,7 @@ It also manages some configurations used for the WLS Domain creation.
    * The WebLogic Server release bits and jdk binaries should be accessible for download from a server (can be internal or public facing) for the buildpack to create the necessary configurations along with the app bits.
      Download the [Linux 64 bit JRE][] version and [WebLogic Server][] generic version.
 
-   * Edit the repository_root of [weblogic.yml](config/weblogic.yml) to point to the server hosting the weblogic binary.
+   * Edit the repository_root of [weblogic.yml](../config/weblogic.yml) to point to the server hosting the weblogic binary.
 
      Sample `repository_root` for weblogic.yml (under weblogic-buildpack/config)
 
@@ -134,6 +134,7 @@ It also manages some configurations used for the WLS Domain creation.
         repository_root: "http://12.1.1.1:7777/fileserver/wls"
         preferAppConfig: false
         startInWlxMode: false
+        prefer_root_web_context: true
 
       ```
 
@@ -305,21 +306,21 @@ Please refer to [Overriding App Bundled Configuration](#overriding-app-bundled-c
    * Domain configuration (non-mandatory)
    
      The **`.wls`** folder should contain a single yaml file that contains information about the user credentials for the target domain.
-     There is a sample [Domain config ](resources/wls/wlsDomainConfig.yml) bundled within the buildpack that can be used as a template to modify/extend the resulting domain.
+     There is a sample [Domain config ](../resources/wls/wlsDomainConfig.yml) bundled within the buildpack that can be used as a template to modify/extend the resulting domain.
 	 
-	 Refer to [domain](docs/container-wls-domain.md) for more details.
+	 Refer to [domain](container-wls-domain.md) for more details.
 	 
    * Scripts (non-mandatory)
    
      There can be a **`script`** folder within **`.wls`** with a WLST jython script, for generating the domain
-     There is a sample [Domain creation script](resources/wls/script/wlsDomainCreate.py) bundled within the buildpack that can be used as a template to modify/extend the resulting domain.
+     There is a sample [Domain creation script](../resources/wls/script/wlsDomainCreate.py) bundled within the buildpack that can be used as a template to modify/extend the resulting domain.
      
-	 Refer to [script](docs/container-wls-script.md) for more details.
+	 Refer to [script](container-wls-script.md) for more details.
 
    * JDBC Datasources related configuration (non-mandatory)
    
      There can be a **`jdbc`** folder within **`.wls`** with multiple yaml files, each containing configuration relating to datasources (single or multi-pool).
-     There is a sample [JDBC config](resources/wls/jdbc/jdbcDatasource1.yml) bundled within the buildpack that can be used as a template to modify/extend the resulting domain with additional datasources.
+     There is a sample [JDBC config](../resources/wls/jdbc/jdbcDatasource1.yml) bundled within the buildpack that can be used as a template to modify/extend the resulting domain with additional datasources.
      
 	 Refer to [jdbc](container-wls-jdbc.md) for more details.
 	 
@@ -335,7 +336,7 @@ Please refer to [Overriding App Bundled Configuration](#overriding-app-bundled-c
      There can be a **`foreignjms`** folder within **`.wls`** with a yaml file, containing configuration relating to Foreign jms resources
      There is a sample [Foreign JMS config](resources/wls/foreignjms/foreignJmsConfig.yml) bundled within the buildpack that can be used as a template to modify/extend the resulting domain with Foreign JMS Services.
      	 
-	 Refer to [foreignjms](docs/container-wls-foreignjms.md) for more details.
+	 Refer to [foreignjms](container-wls-foreignjms.md) for more details.
 
    * Security Resources related configuration (non-mandatory)
    
@@ -468,8 +469,8 @@ cf push wlsSampleApp -m 1024M -p wlsSampleApp.war -t 100
 
 ## Examples
 
-Refer to [WlsSampleWar](resources/wls/WlsSampleApp.war), a sample web application packaged with sample configurations under the resources/wls folder of the buildpack.
-There is also a sample ear file [WlsSampleApp.ear](resources/wls/WlsSampleApp.ear) under the same location.
+Refer to [WlsSampleWar](../resources/wls/WlsSampleApp.war), a sample web application packaged with sample configurations under the resources/wls folder of the buildpack.
+There is also a sample ear file [WlsSampleApp.ear](../resources/wls/WlsSampleApp.ear) under the same location.
 
 ## Buildpack Development and Testing
 * There are 3 stages in the buildpack: **`detect`**, **`compile`** and **`release`**. These can be invoked manually for sandbox testing.
@@ -592,7 +593,7 @@ Please refer to the WebLogic server documentation on the [limited footprint][] o
 
 ## Overriding App Bundled Configuration
 
-The **`prefer_app_config`** parameter specified inside the [weblogic.yml](config\weblogic.yml) config file of the buildpack controls whether the buildpack or application bundled config should be used for Domain creation.
+The **`prefer_app_config`** parameter specified inside the [weblogic.yml](../config/weblogic.yml) config file of the buildpack controls whether the buildpack or application bundled config should be used for Domain creation.
 
 The weblogic-buildpack can override the app bundled configuration for subsystems like jdbc, jms etc.
 The script for generating the domain would be pulled from the buildpack configuration (under resources/wls/script).
@@ -621,6 +622,12 @@ One can also modify the domain creation script to lock down or block access to t
  The Cloud Foundry services that are injected as part of the registered Service Bindings for the application would still be used to create related services during application deployment.
  The Domain Administrators are expected to use the Service Bindings to manage/control the services that are exposed to the application as it moves through various stages (Dev, Test, PreProd, Prod).
 
+
+## Using default root context for Web Apps
+
+The **`prefer_root_web_context`** parameter specified inside the [weblogic.yml](../config/weblogic.yml) of the buildpack allows reconfiguring the web application to use root ('/') context.
+This property only applies to WAR/exploded web application deployments and not to Enterprise (EAR) Applications.
+The parameter defaults to true.
 
 ## Remote Triggering of Thread Dumps, Stats and Heap from App Instances
 

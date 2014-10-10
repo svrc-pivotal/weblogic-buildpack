@@ -41,7 +41,7 @@ These will be used during the start of the server.
 The buildpack would use some defaults (128M for Perm Gen, min of 512m and max of 1024m for heap) in the absence of the jvmConfig file.
 All parameters for heap and perm specified are in MB.
 
-Sample domain config (from [jvmConfig.yml](resources/wls/jvm/jvmConfig.yml)
+Sample domain config (from [jvmConfig.yml](../resources/wls/jvm/jvmConfig.yml)
 ```
 
 # Configuration for the WebLogic Server JVM
