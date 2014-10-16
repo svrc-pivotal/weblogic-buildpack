@@ -43,7 +43,7 @@ shared_context 'integration_helper' do
   end
 
   after do
-    # FileUtils.rm_rf buildpack_dir
+    FileUtils.rm_rf buildpack_dir
   end
 
   def run(command)
