@@ -15,7 +15,6 @@
 # limitations under the License.
 
 require 'java_buildpack/container'
-require 'java_buildpack/container/container_utils'
 require 'java_buildpack/util/format_duration'
 require 'java_buildpack/util/java_main_utils'
 require 'java_buildpack/component/versioned_dependency_component'
@@ -288,6 +287,7 @@ module JavaBuildpack
         configurer.configure
       end
 
+      # Pull the application name from the environment and use it to set some of the Weblogic config values
       def configure_names_from_env
         vcap_application_env_value = ENV['VCAP_APPLICATION']
 
@@ -299,7 +299,6 @@ module JavaBuildpack
 
         @domain_name = @app_name + 'Domain'
         @server_name = @app_name + 'Server'
-
       end
 
       # The root directory of the application being deployed
@@ -315,6 +314,7 @@ module JavaBuildpack
         (@application.root + 'APP-INF').exist? || (@application.root + 'META-INF/application.xml').exist?
       end
 
+      # Update the configured context root in the Weblogic config file to root.
       def modify_context_root_for_war
         weblogic_xml = Dir.glob("#{@application.root}/*/weblogic.xml")[0]
 
@@ -327,14 +327,13 @@ module JavaBuildpack
           file.write(doc.to_s)
           file.fsync
         end
-
       end
 
       # Create a folder
       def create_sub_folder(parent, child)
         return unless (parent + '/' + child).exist?
 
-        # Possible the APP-INF folder got stripped out as it didnt contain anything
+        # Possible the APP-INF folder got stripped out as it didn't contain anything
         system "mkdir #{parent}/#{child}"
       end
 
