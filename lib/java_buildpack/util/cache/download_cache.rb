@@ -77,7 +77,7 @@ module JavaBuildpack
 
         private
 
-        CA_CERTS_DIRECTORY = (Pathname.new(__FILE__).dirname + '../../../../resources/ca_certs').freeze
+        CA_FILE = (Pathname.new(__FILE__).dirname + '../../../../resources/ca_certs.pem').freeze
 
         FAILURE_LIMIT = 5.freeze
 
@@ -113,7 +113,7 @@ module JavaBuildpack
         # Changing from 10 to 20 seconds to ensure the download does not timeout when running on bosh-lite
         TIMEOUT_SECONDS = 20.freeze
 
-        private_constant :CA_CERTS_DIRECTORY, :FAILURE_LIMIT, :HTTP_ERRORS, :REDIRECT_TYPES, :TIMEOUT_SECONDS
+        private_constant :CA_FILE, :FAILURE_LIMIT, :HTTP_ERRORS, :REDIRECT_TYPES, :TIMEOUT_SECONDS
 
         def attempt(http, request, cached_file)
           downloaded = false
@@ -209,7 +209,12 @@ module JavaBuildpack
 
           if secure?(rich_uri)
             http_options[:use_ssl] = true
-            http_options[:ca_path] = CA_CERTS_DIRECTORY.to_s if CA_CERTS_DIRECTORY.exist?
+            @logger.debug { 'Adding HTTP options for secure connection' }
+
+            if CA_FILE.exist?
+              http_options[:ca_file] = CA_FILE.to_s
+              @logger.debug { "Adding additional certs from #{CA_FILE}" }
+            end
           end
 
           http_options
