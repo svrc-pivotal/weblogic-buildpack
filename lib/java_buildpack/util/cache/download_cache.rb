@@ -110,10 +110,7 @@ module JavaBuildpack
           Net::HTTPTemporaryRedirect
         ].freeze
 
-        # Changing from 10 to 20 seconds to ensure the download does not timeout when running on bosh-lite
-        TIMEOUT_SECONDS = 20.freeze
-
-        private_constant :CA_FILE, :FAILURE_LIMIT, :HTTP_ERRORS, :REDIRECT_TYPES, :TIMEOUT_SECONDS
+        private_constant :CA_FILE, :FAILURE_LIMIT, :HTTP_ERRORS, :REDIRECT_TYPES
 
         def attempt(http, request, cached_file)
           downloaded = false
@@ -214,9 +211,6 @@ module JavaBuildpack
         # Beware known problems with timeouts: https://www.ruby-forum.com/topic/143840
         def http_options(rich_uri)
           http_options                   = {}
-          http_options[:connect_timeout] = TIMEOUT_SECONDS
-          http_options[:open_timeout]    = TIMEOUT_SECONDS
-          http_options[:read_timeout]    = TIMEOUT_SECONDS
 
           if secure?(rich_uri)
             http_options[:use_ssl] = true

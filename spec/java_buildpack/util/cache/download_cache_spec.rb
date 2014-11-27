@@ -239,8 +239,7 @@ describe JavaBuildpack::Util::Cache::DownloadCache do
     .to_return(status: 200, body: 'foo-cached', headers: { Etag: 'foo-etag', 'Last-Modified' => 'foo-last-modified' })
 
     allow(Net::HTTP).to receive(:Proxy).and_call_original
-    expect(Net::HTTP).to receive(:start).with('foo-uri', 80, connect_timeout: 20, open_timeout: 20, read_timeout: 20)
-                         .and_call_original
+    expect(Net::HTTP).to receive(:start).with('foo-uri', 80, {}).and_call_original
 
     download_cache.get(uri) {}
   end
@@ -251,8 +250,7 @@ describe JavaBuildpack::Util::Cache::DownloadCache do
 
     allow(ca_certs_directory).to receive(:exist?).and_return(true)
     allow(Net::HTTP).to receive(:Proxy).and_call_original
-    expect(Net::HTTP).to receive(:start).with('foo-uri', 80, connect_timeout: 20, open_timeout: 20, read_timeout: 20)
-                         .and_call_original
+    expect(Net::HTTP).to receive(:start).with('foo-uri', 80, {}).and_call_original
 
     download_cache.get(uri) {}
   end
@@ -262,9 +260,7 @@ describe JavaBuildpack::Util::Cache::DownloadCache do
     .to_return(status: 200, body: 'foo-cached', headers: { Etag: 'foo-etag', 'Last-Modified' => 'foo-last-modified' })
 
     allow(Net::HTTP).to receive(:Proxy).and_call_original
-    expect(Net::HTTP).to receive(:start)
-                         .with('foo-uri', 443, connect_timeout: 20, open_timeout: 20, read_timeout: 20, use_ssl: true)
-                         .and_call_original
+    expect(Net::HTTP).to receive(:start).with('foo-uri', 443, use_ssl: true).and_call_original
 
     download_cache.get(uri_secure) {}
   end
@@ -275,9 +271,7 @@ describe JavaBuildpack::Util::Cache::DownloadCache do
 
     allow(ca_certs_directory).to receive(:exist?).and_return(true)
     allow(Net::HTTP).to receive(:Proxy).and_call_original
-    expect(Net::HTTP).to receive(:start)
-                         .with('foo-uri', 443, connect_timeout: 20, open_timeout: 20, read_timeout: 20, use_ssl: true,
-                               ca_file:                         'test-path').and_call_original
+    expect(Net::HTTP).to receive(:start).with('foo-uri', 443, use_ssl: true, ca_file: 'test-path').and_call_original
 
     download_cache.get(uri_secure) {}
   end
