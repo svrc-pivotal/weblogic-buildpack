@@ -48,7 +48,7 @@ describe JavaBuildpack::Util::Cache::DownloadCache do
   it 'should raise error if file cannot be found',
      :disable_internet do
 
-    expect { download_cache.get uri }.to raise_error('Unable to find cached file for http://foo-uri/, check url has complete endpoints(http/https)!!')
+    expect { download_cache.get uri }.to raise_error('Unable to find cached file for http://foo-uri/')
   end
 
   it 'should return file from immutable cache if internet is disabled',
@@ -86,7 +86,7 @@ describe JavaBuildpack::Util::Cache::DownloadCache do
     expect(Net::HTTP).not_to receive(:Proxy).with('proxy', 9000, nil, nil)
 
     expect { |b| download_cache.get uri_credentials, &b }.to yield_file_with_content(/foo-cached/)
-    expect_complete_credential_cache mutable_cache_root
+    expect_complete_cache mutable_cache_root
   end
 
   it 'should follow redirects' do
@@ -292,26 +292,10 @@ describe JavaBuildpack::Util::Cache::DownloadCache do
     root + "http%3A%2F%2Ffoo-uri%2F.#{extension}"
   end
 
-  def credential_cache_file(root, extension)
-    root + "http%3A%2F%2Ftest-username%3Atest-password@foo-uri%2F.#{extension}"
-  end
-
   def expect_complete_cache(root)
     expect_file_content root, 'cached', 'foo-cached'
     expect_file_content root, 'etag', 'foo-etag'
     expect_file_content root, 'last_modified', 'foo-last-modified'
-  end
-
-  def expect_complete_credential_cache(root)
-    expect_credential_file_content root, 'cached', 'foo-cached'
-    expect_credential_file_content root, 'etag', 'foo-etag'
-    expect_credential_file_content root, 'last_modified', 'foo-last-modified'
-  end
-
-  def expect_credential_file_content(root, extension, content = '')
-    file = credential_cache_file root, extension
-    expect(file).to exist
-    expect(file.read).to eq(content)
   end
 
   def expect_file_content(root, extension, content = '')
