@@ -30,8 +30,14 @@ module JavaBuildpack
           is_ear_app = app_inf?(application)
           is_web_app = web_inf?(application)
           app_wls_config_cache_exists = (application.root + APP_WLS_CONFIG_CACHE_DIR).exist?
-          app_wls_config_cache_exists = (application.root + 'APP-INF' + APP_WLS_CONFIG_CACHE_DIR).exist? unless app_wls_config_cache_exists
-          app_wls_config_cache_exists = (application.root + 'WEB-INF' + APP_WLS_CONFIG_CACHE_DIR).exist? unless app_wls_config_cache_exists
+
+          unless app_wls_config_cache_exists
+            app_wls_config_cache_exists = (application.root + 'APP-INF' + APP_WLS_CONFIG_CACHE_DIR).exist?
+          end
+
+          unless app_wls_config_cache_exists
+            app_wls_config_cache_exists = (application.root + 'WEB-INF' + APP_WLS_CONFIG_CACHE_DIR).exist?
+          end
 
           log("Running Detection on App: #{application.root}")
           log("  Checking for presence of #{APP_WLS_CONFIG_CACHE_DIR} folder under root of the App" \
@@ -48,11 +54,11 @@ module JavaBuildpack
             log "  Do weblogic deployment descriptors exist within App?   : #{wls_config_present}"
             log "  Or is it a simple Web Application with WEB-INF folder? : #{is_web_app}"
             log "  Or is it a Enterprise Application with APP-INF folder? : #{is_ear_app}"
-            log "  Or does #{APP_WLS_CONFIG_CACHE_DIR} folder exist under root of the App?       : #{app_wls_config_cache_exists}"
+            log "  Or does #{APP_WLS_CONFIG_CACHE_DIR} folder exist under root of the App?       : " \
+                "#{app_wls_config_cache_exists}"
           end
 
           result
-
         end
 
         def self.web_inf?(application)

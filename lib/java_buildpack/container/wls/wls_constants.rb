@@ -22,35 +22,36 @@ module JavaBuildpack
       module WlsConstants
 
         # New line character
-        NEWLINE              = "\n".freeze
+        NEWLINE                    = "\n".freeze
         # Application web-inf directory name
-        WEB_INF_DIRECTORY    = 'WEB-INF'.freeze
+        WEB_INF_DIRECTORY          = 'WEB-INF'.freeze
         # Java binary to execute
-        JAVA_BINARY          = 'java'.freeze
+        JAVA_BINARY                = 'java'.freeze
         # Server option name
-        SERVER_VM            = '-server'.freeze
+        SERVER_VM                  = '-server'.freeze
         # Client option name
-        CLIENT_VM            = '-client'.freeze
+        CLIENT_VM                  = '-client'.freeze
 
         # Name of the Weblogic configuration script
-        WLS_CONFIGURE_SCRIPT = 'configure.sh'.freeze
+        WLS_CONFIGURE_SCRIPT       = 'configure.sh'.freeze
 
         # Prefer App Bundled Config or Buildpack bundled Config
-        PREFER_APP_CONFIG    = 'prefer_app_config'.freeze
+        PREFER_APP_CONFIG          = 'prefer_app_config'.freeze
 
         # Prefer App Bundled Config or Buildpack bundled Config
-        START_IN_WLX_MODE    = 'start_in_wlx_mode'.freeze
+        START_IN_WLX_MODE          = 'start_in_wlx_mode'.freeze
 
         # Prefer Root as web app context
-        PREFER_ROOT_WEB_CONTEXT = 'prefer_root_web_context'.freeze
+        PREFER_ROOT_WEB_CONTEXT    = 'prefer_root_web_context'.freeze
 
         # Parent Location to save/store the application during deployment
-        DOMAIN_APPS_FOLDER   = 'apps'.freeze
+        DOMAIN_APPS_FOLDER         = 'apps'.freeze
 
         # WLS_DOMAIN_PATH is relative to sandbox
-        WLS_DOMAIN_PATH      = 'domains/'.freeze
+        WLS_DOMAIN_PATH            = 'domains/'.freeze
 
-        # Expect to see a '.wls' folder containing domain configurations and script to create the domain within the App bits
+        # Expect to see a '.wls' folder containing domain configurations and script to create the domain within the App
+        # bits
         APP_WLS_CONFIG_CACHE_DIR   = '.wls'.freeze
 
         # Relative to the .wls folder all under the APP ROOT
@@ -69,7 +70,8 @@ module JavaBuildpack
         WLS_SCRIPT_CACHE_DIR       = 'script'.freeze
 
         # Default WebLogic Configurations packaged within the buildpack
-        BUILDPACK_CONFIG_CACHE_DIR = Pathname.new(File.expand_path('../../../../resources/wls', File.dirname(__FILE__))).freeze
+        BUILDPACK_CONFIG_CACHE_DIR = Pathname.new(File.expand_path('../../../../resources/wls',
+                                                                   File.dirname(__FILE__))).freeze
 
       end
     end

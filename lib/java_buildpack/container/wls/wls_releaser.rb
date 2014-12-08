@@ -41,7 +41,8 @@ module JavaBuildpack
         # 2. Add app based jvm args (like application name, instance index, space name, warden container ip and names)
         # 3. Allow scale up/down based on variance between actual and staging memory settings
         # 4. Modify script to use updated jvm args (including resized heaps)
-        # 5. Modify the server name reference to include the app instance index to differentiate between instances of the same app
+        # 5. Modify the server name reference to include the app instance index to differentiate between instances of
+        #    the same app
 
         # Create a post-shutdown script that will handle following
         # 1. Report shutting down of the server instance
@@ -78,7 +79,6 @@ module JavaBuildpack
         # Modify the templated preStart script with actual values
 
         def modify_pre_start_script
-
           # Load the app bundled configurations and re-configure as needed the JVM parameters for the Server VM
           log("JVM config passed via droplet java_opts : #{@droplet.java_opts}")
 
@@ -105,7 +105,6 @@ module JavaBuildpack
           File.open(script_path, 'w') { |f| f.write modified }
 
           log('Updated preStart.sh files!!')
-
         end
 
         def log(content)

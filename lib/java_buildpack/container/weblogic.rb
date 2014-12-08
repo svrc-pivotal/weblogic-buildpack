@@ -48,7 +48,9 @@ module JavaBuildpack
 
         if @supports
           @wls_version, @wls_uri = JavaBuildpack::Repository::ConfiguredItem
-          .find_item(@component_name, @configuration) { |candidate_version| candidate_version.check_size(3) }
+                                     .find_item(@component_name, @configuration) do |candidate_version|
+            candidate_version.check_size(3)
+          end
 
           @prefer_app_config       = @configuration[PREFER_APP_CONFIG]
           @start_in_wlx_mode       = @configuration[START_IN_WLX_MODE]
@@ -67,16 +69,16 @@ module JavaBuildpack
             create_sub_folder(@droplet.root, 'WEB-INF')
           end
 
-          @wls_domain_path          = @wls_sandbox_root + WLS_DOMAIN_PATH
-          @app_config_cache_root    = @application.root + APP_WLS_CONFIG_CACHE_DIR
-          @app_services_config      = @application.services
+          @wls_domain_path             = @wls_sandbox_root + WLS_DOMAIN_PATH
+          @app_config_cache_root       = @application.root + APP_WLS_CONFIG_CACHE_DIR
+          @app_services_config         = @application.services
 
           # Root of Buildpack bundled config cache - points to <weblogic-buildpack>/resources/wls
           @buildpack_config_cache_root = BUILDPACK_CONFIG_CACHE_DIR
 
           load
         else
-          @wls_version, @wls_uri       = nil, nil
+          @wls_version, @wls_uri = nil, nil
         end
       end
 
@@ -98,17 +100,17 @@ module JavaBuildpack
         # Modify the context root to '/' in case of war
         # and prefer_root_web_context is enabled in buildpack weblogic.yml config
         modify_context_root_for_war if web_inf? && @prefer_root_web_context
-
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
-        monitor_agent = JavaBuildpack::Container::Wls::MonitorAgent.new(@application)
+        monitor_agent  = JavaBuildpack::Container::Wls::MonitorAgent.new(@application)
         monitor_script = monitor_agent.monitor_script
 
-        releaser = JavaBuildpack::Container::Wls::WlsReleaser.new(@application, @droplet, @domain_home, @server_name, @start_in_wlx_mode)
-        pre_start_script = releaser.pre_start
-        post_shutdown_script  = releaser.post_shutdown
+        releaser             = JavaBuildpack::Container::Wls::WlsReleaser.new(@application, @droplet, @domain_home,
+                                                                              @server_name, @start_in_wlx_mode)
+        pre_start_script     = releaser.pre_start
+        post_shutdown_script = releaser.post_shutdown
 
         [
           @droplet.java_home.as_env_var,
@@ -127,7 +129,8 @@ module JavaBuildpack
         "#{Weblogic.to_s.dash_case}=#{version}"
       end
 
-      # The unique identifier of the component, incorporating the version of the dependency (e.g. +wls-buildpack-support=12.1.2+)
+      # The unique identifier of the component, incorporating the version of the dependency (e.g.
+      # +wls-buildpack-support=12.1.2+)
       #
       # @param [String] version the version of the dependency
       # @return [String] the unique identifier of the component
@@ -148,7 +151,6 @@ module JavaBuildpack
 
       # @return [Hash] the configuration or an empty hash if the configuration file does not exist
       def load
-
         # Determine the configs that should be used to drive the domain creation.
         # Can be the App bundled configs
         # or the buildpack bundled configs
@@ -156,9 +158,9 @@ module JavaBuildpack
         # Locate the domain config either under APP-INF or WEB-INF location
         locate_domain_config_by_app_type
 
-        # During development when the domain structure is still in flux, use App bundled config to test/tweak the domain.
-        # Once the domain structure is finalized, save the configs as part of the buildpack and then only pass along the
-        # bare bones domain config and jvm config. Ignore the rest of the app configs.
+        # During development when the domain structure is still in flux, use App bundled config to test/tweak the
+        # domain. Once the domain structure is finalized, save the configs as part of the buildpack and then only pass
+        # along the bare bones domain config and jvm config. Ignore the rest of the app configs.
 
         @config_cache_root = determine_config_cache
 
@@ -184,18 +186,18 @@ module JavaBuildpack
         domain_configuration = YAML.load_file(@wls_domain_yaml_config)
         log("WLS Domain Configuration: #{@wls_domain_yaml_config}: #{domain_configuration}")
 
-        @domain_config   = domain_configuration['Domain']
+        @domain_config = domain_configuration['Domain']
 
         # Parse environment variable VCAP_APPLICATION to
         # configure the app, domain and server names
         configure_names_from_env
 
-        @app_name        = 'testApp'  unless @app_name
-        @domain_name     = 'cfDomain' unless @domain_name
-        @server_name     = 'myserver' unless @server_name
+        @app_name    = 'testApp' unless @app_name
+        @domain_name = 'cfDomain' unless @domain_name
+        @server_name = 'myserver' unless @server_name
 
-        @domain_home     = @wls_domain_path + @domain_name
-        @app_src_path    = @application.root
+        @domain_home  = @wls_domain_path + @domain_name
+        @app_src_path = @application.root
 
         domain_configuration || {}
       end
@@ -204,7 +206,7 @@ module JavaBuildpack
       def locate_domain_config_by_app_type
         # Search for the configurations first under the WEB-INF or APP-INF folders and later directly under app bits
         if web_inf?
-          war_config_cache_root    = @application.root + 'WEB-INF' + APP_WLS_CONFIG_CACHE_DIR
+          war_config_cache_root = @application.root + 'WEB-INF' + APP_WLS_CONFIG_CACHE_DIR
           # If no config cache directory exists under the WEB-INF,
           # check directly under the app and move it under the WEB-INF folder if its present
           unless Dir.exist?(war_config_cache_root)
@@ -217,7 +219,7 @@ module JavaBuildpack
           @wls_domain_yaml_config = Dir.glob("#{war_config_cache_root}/*.yml")[0]
 
         elsif app_inf?
-          ear_config_cache_root    = @application.root + 'APP-INF' + APP_WLS_CONFIG_CACHE_DIR
+          ear_config_cache_root = @application.root + 'APP-INF' + APP_WLS_CONFIG_CACHE_DIR
           # If no config cache directory exists under the APP-INF,
           # check directly under the app and move it under the APP-INF folder if its present
           unless Dir.exist?(ear_config_cache_root)
@@ -228,20 +230,19 @@ module JavaBuildpack
 
           @app_config_cache_root  = ear_config_cache_root
           @wls_domain_yaml_config = Dir.glob("#{ear_config_cache_root}/*.yml")[0]
-
         end
-
       end
 
-      # Determine which configurations should be used for driving the domain creation - App or buildpack bundled configuration
+      # Determine which configurations should be used for driving the domain creation - App or buildpack bundled
+      # configuration
       def determine_config_cache
-
         if @prefer_app_config
           # Use the app bundled configuration and domain creation scripts.
           @app_config_cache_root
         else
           # Use the buidlpack's bundled configuration and domain creation scripts (under resources/wls)
-          # But the jvm and domain configuration files from the app bundle will be used, rather than the buildpack version.
+          # But the jvm and domain configuration files from the app bundle will be used, rather than the buildpack
+          # version.
           @buildpack_config_cache_root
         end
       end
@@ -256,7 +257,7 @@ module JavaBuildpack
 
         download(@wls_version, @wls_uri) do |input_file|
           wls_installer = JavaBuildpack::Container::Wls::WlsInstaller.new(input_file, installation_map)
-          result_map = wls_installer.install
+          result_map    = wls_installer.install
 
           @java_home   = result_map['java_home']
           @wls_install = result_map['wls_install']
@@ -295,7 +296,7 @@ module JavaBuildpack
         vcap_app_map = YAML.load(vcap_application_env_value)
 
         # name     = vcap_app_map['name']
-        @app_name = vcap_app_map['application_name']
+        @app_name    = vcap_app_map['application_name']
 
         @domain_name = @app_name + 'Domain'
         @server_name = @app_name + 'Server'

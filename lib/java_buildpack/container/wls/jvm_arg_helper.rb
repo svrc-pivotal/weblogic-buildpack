@@ -24,14 +24,14 @@ module JavaBuildpack
         # Load the app bundled configurations and re-configure as needed the JVM parameters for the Server VM
         # @return [Hash] the configuration or an empty hash if the configuration file does not exist
         def self.update(java_opts)
-
           # Use JVM Args defaults
           jvm_default_map = {
             'min_perm_size'  => 128,
             'max_perm_size'  => 128,
             'min_heap_size'  => 512,
             'max_heap_size'  => 1024,
-            'other_jvm_opts' => ' -verbose:gc -Xloggc:gc.log -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:-DisableExplicitGC -Djava.security.egd=file:/dev/./urandom '
+            'other_jvm_opts' => ' -verbose:gc -Xloggc:gc.log -XX:+PrintGCDetails -XX:+PrintGCTimeStamps ' \
+                                '-XX:-DisableExplicitGC -Djava.security.egd=file:/dev/./urandom '
           }
 
           java_opt_tokens = java_opts.join(' ').split

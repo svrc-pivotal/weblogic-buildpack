@@ -106,10 +106,13 @@ module JavaBuildpack
 
           ## The jar install of weblogic does not like hidden directories in its install path like .java-buildpack
           ## [VALIDATION] [ERROR]:INST-07004: Oracle Home location contains one or more invalid characters
-          ## [VALIDATION] [SUGGESTION]:The directory name may only contain alphanumeric, underscore (_), hyphen (-) , or dot (.) characters, and it must begin with an alphanumeric character.
-          ## Provide a different directory name. installation Failed. Exiting installation due to data validation failure.
+          ## [VALIDATION] [SUGGESTION]:The directory name may only contain alphanumeric, underscore (_), hyphen (-) , or
+          ## dot (.) characters, and it must begin with an alphanumeric character.
+          ## Provide a different directory name. installation Failed. Exiting installation due to data validation
+          ## failure.
           ## The Oracle Universal Installer failed.  Exiting.
-          ## So, the <APP>/.java-buildpack/weblogic/wlsInstall path wont work here; have to create the wlsInstall outside of the .java-buildpack, just under the app location.
+          ## So, the <APP>/.java-buildpack/weblogic/wlsInstall path wont work here; have to create the wlsInstall
+          ## outside of the .java-buildpack, just under the app location.
           # @wls_install_path = File.absolute_path("#{@wls_sandbox_root}/../../wlsInstall")
           # Now installing under the App/WEB-INF/wlsInstall or App/APP-INF/wlsInstall folder
           @wls_install_path = @wls_sandbox_root.to_s
@@ -137,7 +140,8 @@ module JavaBuildpack
         def print_warnings
           log_and_print('Installing WebLogic from Jar or Binary downloaded file in silent mode')
           log_and_print('WARNING!! Installation of WebLogic Server from Jar or Binary image requires complete JDK.'\
-                        ' If install fails with JRE binary, please change buildpack to refer to full JDK installation rather than JRE and retry!!')
+                        ' If install fails with JRE binary, please change buildpack to refer to full JDK ' \
+                        'installation rather than JRE and retry!!')
         end
 
         def save_middleware_home_in_configure_script(configure_script, wls_install_path, java_home)
@@ -184,8 +188,10 @@ module JavaBuildpack
         def construct_install_command(install_binary_file)
           java_binary = "#{@java_home}/bin/java"
 
-          # There appears to be a problem running the java -jar on the cached jar file with java being unable to get to the manifest correctly for some strange reason
-          # Seems to fail with file name http:%2F%2F12.1.1.1:7777%2Ffileserver%2Fwls%2Fwls_121200.jar.cached but works fine if its foo.jar or anything simpler.
+          # There appears to be a problem running the java -jar on the cached jar file with java being unable to get to
+          # the manifest correctly for some strange reason
+          # Seems to fail with file name http:%2F%2F12.1.1.1:7777%2Ffileserver%2Fwls%2Fwls_121200.jar.cached but works
+          # fine if its foo.jar or anything simpler.
           # So, create a temporary link to the jar with a simpler name and then run the install..
           if install_binary_file[/\.jar/]
             new_binary_path = '/tmp/wls_tmp_installer.jar'
@@ -233,7 +239,8 @@ module JavaBuildpack
         # Check whether running on non-linux machine, to pick the correct JAVA_HOME location
         def check_and_reset_java_home_for_non_linux(java_home)
           unless linux?
-            log_and_print('Warning!!! Running on Mac or other non-linux flavor, cannot use linux java binaries downloaded earlier...!!')
+            log_and_print('Warning!!! Running on Mac or other non-linux flavor, cannot use linux java binaries ' \
+                          'downloaded earlier...!!')
             log_and_print('Trying to find local java instance on machine')
 
             java_binary_locations = Dir.glob("/Library/Java/JavaVirtualMachines/**/#{JAVA_BINARY}")

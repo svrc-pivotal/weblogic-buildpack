@@ -24,12 +24,11 @@ module JavaBuildpack
       class MonitorAgent
         include JavaBuildpack::Container::Wls::WlsConstants
 
-        # Create a setup script that would monitor for update in 'access time' of pre-designated target files through client action (using cf files interface)
-        # and dump threads or heap or stats as required.
+        # Create a setup script that would monitor for update in 'access time' of pre-designated target files through
+        # client action (using cf files interface) and dump threads or heap or stats as required.
         # This script would be kicked off in the background just before server start
         # This script is getting copied over to the $HOME directory
         def initialize(application)
-
           @monitor_agent_root = "#{application.root}/#{MONITORING_AGENT_DIR}"
 
           system "mkdir -p #{@monitor_agent_root} 2>/dev/null"
@@ -38,7 +37,6 @@ module JavaBuildpack
           @dumper_agent_script = Dir.glob("#{@monitor_agent_root}/#{MONITORING_AGENT_SCRIPT}")[0]
 
           system "chmod +x #{@monitor_agent_root}/*"
-
         end
 
         # define the path to the agent script
@@ -48,14 +46,16 @@ module JavaBuildpack
 
         private
 
-        MONITORING_AGENT_DIR     = '.monitor'.freeze
-        MONITORING_RESOURCE      = 'monitoring'.freeze
-        MONITORING_AGENT_PATH    = 'agent'.freeze
-        MONITORING_AGENT_SCRIPT  = 'dumperAgent.sh'.freeze
+        MONITORING_AGENT_DIR    = '.monitor'.freeze
+        MONITORING_RESOURCE     = 'monitoring'.freeze
+        MONITORING_AGENT_PATH   = 'agent'.freeze
+        MONITORING_AGENT_SCRIPT = 'dumperAgent.sh'.freeze
 
-        BUILDPACK_MONITOR_AGENT_PATH = "#{BUILDPACK_CONFIG_CACHE_DIR}/#{MONITORING_RESOURCE}/#{MONITORING_AGENT_PATH}".freeze
+        BUILDPACK_MONITOR_AGENT_PATH = "#{BUILDPACK_CONFIG_CACHE_DIR}/#{MONITORING_RESOURCE}/" \
+                                       "#{MONITORING_AGENT_PATH}".freeze
 
-        private_constant :MONITORING_AGENT_DIR, :MONITORING_RESOURCE, :MONITORING_AGENT_PATH, :MONITORING_AGENT_SCRIPT, :BUILDPACK_MONITOR_AGENT_PATH
+        private_constant :MONITORING_AGENT_DIR, :MONITORING_RESOURCE, :MONITORING_AGENT_PATH, :MONITORING_AGENT_SCRIPT,
+                         :BUILDPACK_MONITOR_AGENT_PATH
 
       end
 

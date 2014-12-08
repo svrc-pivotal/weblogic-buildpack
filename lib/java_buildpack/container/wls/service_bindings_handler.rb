@@ -29,14 +29,13 @@ module JavaBuildpack
 
         # From a set of files
         def self.create_service_definitions_from_file_set(service_binding_locations, configRoot, output_props_file)
-
           service_binding_locations.each do |input_service_bindings_location|
 
             parent_path_name = Pathname.new(File.dirname(input_service_bindings_location))
-            module_name = parent_path_name.relative_path_from(configRoot).to_s.downcase
+            module_name      = parent_path_name.relative_path_from(configRoot).to_s.downcase
 
             input_service_bindings_file = File.open(input_service_bindings_location, 'r')
-            service_config = YAML.load_file(input_service_bindings_file)
+            service_config              = YAML.load_file(input_service_bindings_file)
 
             service_config.each do |service_entry|
               create_service_definitions_from_app_config(service_entry, module_name, output_props_file)
@@ -164,7 +163,12 @@ module JavaBuildpack
         # Save the Oracle JDBC attribute
         def self.save_oracle_attrib(jdbc_datasource_config, f)
           f.puts 'testSql=SQL SELECT 1 from DUAL'
-          f.puts jdbc_datasource_config['driver'] ? "driver=#{jdbc_datasource_config['driver']}" : 'driver=oracle.jdbc.OracleDriver'
+
+          if jdbc_datasource_config['driver']
+            f.puts "driver=#{jdbc_datasource_config['driver']}"
+          else
+            f.puts 'driver=oracle.jdbc.OracleDriver'
+          end
 
           xa_protocol = jdbc_datasource_config['xaProtocol']
           xa_protocol = 'None' unless xa_protocol
@@ -174,10 +178,10 @@ module JavaBuildpack
         # Save the JDBC storage capacities
         def self.save_capacities(jdbc_datasource_config, f)
           init_capacity = jdbc_datasource_config['initCapacity']
-          max_capacity = jdbc_datasource_config['maxCapacity']
+          max_capacity  = jdbc_datasource_config['maxCapacity']
 
           init_capacity = 1 unless init_capacity
-          max_capacity = 4 unless max_capacity
+          max_capacity  = 4 unless max_capacity
 
           f.puts "initCapacity=#{init_capacity}"
           f.puts "maxCapacity=#{max_capacity}"
@@ -203,7 +207,6 @@ module JavaBuildpack
 
           f.puts "username=#{jdbc_datasource_config['username']}" if jdbc_datasource_config['username']
           f.puts "password=#{jdbc_datasource_config['password']}" if jdbc_datasource_config['password']
-
         end
 
         # Configure the JDBC connection URL
@@ -221,19 +224,20 @@ module JavaBuildpack
           # Sample uri can be: jdbc:oracle://test:9U6DFinHnqeI7_L@testoracle.testhost.com:1521/XE
           # Take out the credentials from within the uri and save those as user/password
           # Oracle JDBC Driver has issues with urls having //user:password@host format
-          # Example: The driver oracle.jdbc.OracleDriver does not accept URL jdbc:oracle://test:9U6DFinHnqeI7_L@testoracle.testhost.com:1521/XE
+          # Example: The driver oracle.jdbc.OracleDriver does not accept URL
+          # jdbc:oracle://test:9U6DFinHnqeI7_L@testoracle.testhost.com:1521/XE
 
           # First add 'jdbc'
           given_jdbc_url = "jdbc:#{given_jdbc_url}"
 
           if given_jdbc_url[/@/] && %r{//}.match(given_jdbc_url)
-            start_index = given_jdbc_url.index('//') + 2
-            end_index   = given_jdbc_url.index('@') - 1
+            start_index        = given_jdbc_url.index('//') + 2
+            end_index          = given_jdbc_url.index('@') - 1
             user_passwd_tokens = given_jdbc_url[start_index..end_index].split(':')
 
             # Move the indices either before or after the markers
-            start_index -= 3
-            end_index += 2
+            start_index        -= 3
+            end_index          += 2
 
             uri = jdbc_datasource_config['uri']
             if uri[/^oracle/i]
@@ -242,7 +246,8 @@ module JavaBuildpack
               # jdbc_url = given_jdbc_url[0..start_index] + 'thin:@//' + given_jdbc_url[end_index..-1]
               jdbc_url = given_jdbc_url[0..start_index] + 'thin:@' + given_jdbc_url[end_index..-1]
             else
-              # For all others like postgres/mysql, include the '//' as they support jdbc:postgresql://host:port/database
+              # For all others like postgres/mysql, include the '//' as they support
+              # jdbc:postgresql://host:port/database
               jdbc_url = given_jdbc_url[0..(start_index + 2)] + given_jdbc_url[end_index..-1]
             end
 
@@ -259,7 +264,11 @@ module JavaBuildpack
         # Save the connection reset setting
         def self.save_connectionrefresh_setting(jdbc_datasource_config, f)
           connection_creation_retry_frequency = JDBC_CONN_CREATION_RETRY_FREQ_SECS
-          connection_creation_retry_frequency = jdbc_datasource_config['connectionCreationRetryFrequency'] unless jdbc_datasource_config['connectionCreationRetryFrequency'].nil?
+
+          unless jdbc_datasource_config['connectionCreationRetryFrequency'].nil?
+            connection_creation_retry_frequency = jdbc_datasource_config['connectionCreationRetryFrequency']
+          end
+
           f.puts "connectionCreationRetryFrequency=#{connection_creation_retry_frequency}"
         end
 
@@ -267,9 +276,11 @@ module JavaBuildpack
         def self.save_other_jdbc_settings(jdbc_datasource_config, f)
           jdbc_datasource_config.each do |entry|
             # Save everything else that does not match the already saved patterns
-            f.puts "#{entry[0]}=#{entry[1]}" unless entry[0][/(name)|(jndiName)|(password)|(isMulti)|(jdbcUrl)|(mp_algo)|(Capacity)|(connection)|(driver)|(testSql)|(xaProtocol)/]
+            unless entry[0][/(name)|(jndiName)|(password)|(isMulti)|(jdbcUrl)|(mp_algo)|(Capacity)|(connection)
+                            |(driver)|(testSql)|(xaProtocol)/]
+              f.puts "#{entry[0]}=#{entry[1]}"
+            end
           end
-
         end
 
         # Save the JDBC service definitions
@@ -302,16 +313,14 @@ module JavaBuildpack
 
         # Dont see a point of WLS customers using AMQP to communicate...
         def self.save_amqp_jms_service_definition(amqpService, output_props_file)
-
           # Dont know which InitialCF to use as well as the various arguments to pass in to bridge WLS To AMQP
-
           File.open(output_props_file, 'a') do |f|
             f.puts ''
             f.puts "[ForeignJMS-AQMP-#{amqpService['name']}]"
             f.puts "name=#{amqpService['name']}"
-            f.puts 'jndiProperties=javax.naming.factory.initial=org.apache.qpid.amqp_1_0.jms.jndi.PropertiesFileInitialContextFactory;' + 'javax.naming.provider.url=' + "#{amqpService['credentials']['uri']}"
+            f.puts 'jndiProperties=javax.naming.factory.initial=org.apache.qpid.amqp_1_0.jms.jndi' \
+                   ".PropertiesFileInitialContextFactory;javax.naming.provider.url=#{amqpService['credentials']['uri']}"
             f.puts ''
-
           end
         end
 
@@ -327,7 +336,6 @@ module JavaBuildpack
             end
 
             f.puts ''
-
           end
         end
 
@@ -343,7 +351,6 @@ module JavaBuildpack
             end
 
             f.puts ''
-
           end
         end
 
@@ -355,8 +362,7 @@ module JavaBuildpack
            || jdbc_service['driver'] =~ filter                                \
            || jdbc_service['jdbcUrl'] =~ filter                               \
            || jdbc_service['uri'] =~ filter                                   \
-           || (jdbc_service['tags'].any? { |tag| tag =~ filter }  if jdbc_service['tags'])
-
+           || (jdbc_service['tags'].any? { |tag| tag =~ filter } if jdbc_service['tags'])
         end
 
         # Log the message
