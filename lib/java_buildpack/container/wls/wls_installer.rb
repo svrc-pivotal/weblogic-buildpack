@@ -245,7 +245,6 @@ module JavaBuildpack
 
             java_binary_locations = Dir.glob("/Library/Java/JavaVirtualMachines/**/#{JAVA_BINARY}")
             java_binary_locations.each do |java_binary_candidate|
-
               # The full installs have $JAVA_HOME/jre/bin/java path
               java_home =  File.dirname(java_binary_candidate) + '/..' if java_binary_candidate[/jdk1.7/]
             end

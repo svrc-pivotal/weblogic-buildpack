@@ -37,7 +37,6 @@ module JavaBuildpack
           java_opt_tokens = java_opts.join(' ').split
 
           java_opt_tokens.each do |token|
-
             int_value_in_mb = token[/[0-9]+/].to_i
 
             # The values incoming can be in MB or KB

@@ -120,7 +120,6 @@ module JavaBuildpack
 
         def modify_comm_env
           Dir.glob("#{@wls_install}/**/commEnv.sh").each do |commEnvScript|
-
             original = File.open(commEnvScript, 'r') { |f| f.read }
             modified = original.gsub(/#{CLIENT_VM}/, SERVER_VM)
 

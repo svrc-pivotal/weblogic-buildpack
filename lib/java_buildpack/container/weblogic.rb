@@ -84,11 +84,8 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::BaseComponent#detect)
       def detect
-        if @wls_version
-          [wls_id(@wls_version)]
-        else
-          nil
-        end
+        return nil unless @wls_version
+        [wls_id(@wls_version)]
       end
 
       # (see JavaBuildpack::Component::BaseComponent#compile)

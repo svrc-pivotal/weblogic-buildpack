@@ -30,7 +30,6 @@ module JavaBuildpack
         # From a set of files
         def self.create_service_definitions_from_file_set(service_binding_locations, configRoot, output_props_file)
           service_binding_locations.each do |input_service_bindings_location|
-
             parent_path_name = Pathname.new(File.dirname(input_service_bindings_location))
             module_name      = parent_path_name.relative_path_from(configRoot).to_s.downcase
 
