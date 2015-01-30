@@ -33,6 +33,7 @@ jres:
 
 frameworks:
   - "JavaBuildpack::Framework::AppDynamicsAgent"
+  - "JavaBuildpack::Framework::DynaTraceAgent"
   - "JavaBuildpack::Framework::JavaOpts"
   - "JavaBuildpack::Framework::MariaDbJDBC"
   - "JavaBuildpack::Framework::NewRelicAgent"
