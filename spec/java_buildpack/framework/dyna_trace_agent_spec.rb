@@ -37,16 +37,29 @@ describe JavaBuildpack::Framework::DynaTraceAgent do
     end
 
     it 'expands DynaTrace agent zip',
-       cache_fixture: 'stub-dyna-trace-agent.zip' do
+       cache_fixture: 'stub-dyna-trace-agent.jar' do
 
       component.compile
-
-      expect(sandbox + 'agent/lib64/libdtagent.so').to exist
+      expect(sandbox + 'home/agent/lib64/libdtagent.so').to exist
+      expect(sandbox + 'YouShouldNotHaveUnzippedMe.txt').not_to exist
     end
    
    it 'updates JAVA_OPTS' do
       component.release
-      expect(java_opts).to include("-agentpath:$PWD/.java-buildpack/dyna_trace_agent/agent/lib64/libdtagent.so=name=test-application-name,server=test-host-name")
+      expect(java_opts).to include("-agentpath:$PWD/.java-buildpack/dyna_trace_agent/home/agent/lib64/libdtagent.so=name=test-application-name_Monitoring,server=test-host-name")
     end
+  end
+  
+  context do
+    before do
+      allow(services).to receive(:one_service?).with(/dynatrace/, 'server').and_return(true)
+      allow(services).to receive(:find_service).and_return('credentials' => {'server' => 'test-host-name', 'profile' => 'test-profile'})
+    end
+    
+     it 'updates JAVA_OPTS with custom profile' do
+      component.release
+      expect(java_opts).to include("-agentpath:$PWD/.java-buildpack/dyna_trace_agent/home/agent/lib64/libdtagent.so=name=test-application-name_test-profile,server=test-host-name")
+    end
+  
   end
 end
