@@ -30,14 +30,22 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
       def compile
         download_zip false
-        FileUtils.mkdir_p logs_dir
         @droplet.copy_resources
+        FileUtils.mkdir(home_dir)
+        FileUtils.mv(@droplet.sandbox + 'agent/linux-x86-64/agent', home_dir)
+        FileUtils.rm_rf(@droplet.sandbox + 'agent')
+        FileUtils.rm_rf(@droplet.sandbox + 'init.d')
+        FileUtils.rm_rf(@droplet.sandbox + 'com')
+        FileUtils.rm_rf(@droplet.sandbox + 'org')
+        FileUtils.rm_rf(@droplet.sandbox + 'META_INF')
+        FileUtils.rm_f(@droplet.sandbox + 'YouShouldNotHaveUnzippedMe.txt')
+        true       
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
         @droplet.java_opts
-          .add_agentpath(agent_dir + "libdtagent.so", {name: application_name, server: server})
+          .add_agentpath(agent_dir + "libdtagent.so", {name: application_name + "_" + profile_name, server: server})
       end
 
       protected
@@ -57,14 +65,22 @@ module JavaBuildpack
         @application.details['application_name']
       end
 
+      def profile_name
+        @application.services.find_service(FILTER)['credentials']['profile'] || 'Monitoring'
+      end
+      
       def agent_dir
-        @droplet.sandbox + 'agent/lib64'
+        @droplet.sandbox + 'home/agent/lib64'
       end
 
       def logs_dir
-        @droplet.sandbox + 'log'
+        @droplet.sandbox + 'home/log'
       end
-
+          
+      def home_dir
+        @droplet.sandbox + 'home'
+      end
+      
       def server
         @application.services.find_service(FILTER)['credentials']['server']
       end

@@ -15,5 +15,5 @@
 
 # Configuration for the New Relic framework
 ---
-version: 6.1.+
-repository_root: "http://files.192.168.50.1.xip.io:8080/fileserver/dynatrace"
+version: 6.1.0_+
+repository_root: ""
