@@ -5,6 +5,7 @@ rvm:
 before_script: if [[ $TRAVIS_RUBY_VERSION != '1.9.3-p551' || $TRAVIS_SECURE_ENV_VARS
   != 'true' ]]; then unset CODECLIMATE_REPO_TOKEN; fi
 cache: bundler
+sudo: false
 notifications:
   slack:
     secure: KYv8c/c58DmeLfCSdofpFd65Ul5IuMlWOhm3KuF6GVDP33VFWloKZ6jZbuKH4idi76L6hZGZotsljLFfkaLFQ7a3PrcPz+77Th7SmBThtz5P81o8flVquby3/XDQ3DFi/ASATxHqJyTctJl2BTdlup7qLJxtQVYUp7o08XYnyE4=
