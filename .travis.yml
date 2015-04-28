@@ -8,11 +8,13 @@ cache: bundler
 sudo: false
 notifications:
   slack:
-    secure: TjtH21rnlUlNVu47g+cZSfgI+01RyAZzuMNU1nZskuUMJzf0PHGQAvA9VVVtC5SQiipGg0eB60xIlFN1VW/pYGw5yUcRkuqp9BUywC6CQFpduOc8fyBJ/ZD90Uu3tS/dCc5WCPRA1KPvGgtd6biofBuC/PJ8rMHQO6SVHUxGVvI=
+    secure: KYv8c/c58DmeLfCSdofpFd65Ul5IuMlWOhm3KuF6GVDP33VFWloKZ6jZbuKH4idi76L6hZGZotsljLFfkaLFQ7a3PrcPz+77Th7SmBThtz5P81o8flVquby3/XDQ3DFi/ASATxHqJyTctJl2BTdlup7qLJxtQVYUp7o08XYnyE4=
   webhooks:
     urls:
-    - http://build-monitor.cfapps.io/projects/JBP/webhook
+    - http://build-monitor.cfapps.io/projects/WLBP/webhook
     on_start: true
 env:
   global:
-    secure: chtqT1mTsdgd7WFeieNcMnwK4bI+4kzpNbzHo18ITOEsjrTxHinYGRitS+CbJ0sVivOlfunWkF2mcEs1941LCSGsUzNVv8tEYfAS94HO/dK/WJMEtpH8r1JTXoP4yY2rb86ynSB79LuIzjBHpEv4FohrxdScLaoy88+Aw3boauM= #CODECLIMATE_REPO_TOKEN
+  - secure: njB2370t9TXXmvtVBB7z/aodGOI13sfeCB+Eh/Y/9oSmlnrOHav5QXJbdHKgYbQ+YhBdNfPF9KjW/+bNwi0NbGii0eiTMXw1y+3FDVfTWFFYJYdgpHVMQbZrjVET7DdRPzOmF7xdKz7KK6MhUzWIgA0o000291akDfkWSA5ZlwE= # CODECLIMATE_REPO_TOKEN
+  - secure: e7LjEnsPjNdMseTlvBBSaH6/Y+/PhM6gmPmYhowXv/evzul1QkzK12Eqnh7dNKS/PotwEfc0+7P9Q6xtHlPVyv044+SzYUeug8X/uLVHWHB77me0f9OkDb3yKU/SLPj/ddGZGYntgCTQTvOjILMPMfZTZpH/tBNYIvcOUyvjmnw= # ORACLE_JRE_DOWNLOAD
+  - secure: i2+tPJ6VVHcNREohplQ/FYkGTpdOQo5KUPqt15dggGIaKiB2r+ChgahcQnf3i5O2jxEEdTdOJFQDkjWbj9+rBegEhUXQJLgoON0pdxpLMa1EF5PvWhzN/HSjZrwCygfKcERx+Nef7F85gQfJqWxQUIdbgIWNsFevkHnuQW1Y+wI= # WEBLOGIC_DOWNLOAD

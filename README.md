@@ -1,28 +1,20 @@
-# Cloud Foundry Java Buildpack
-[![Build Status](https://travis-ci.org/cloudfoundry/java-buildpack.svg?branch=master)](https://travis-ci.org/cloudfoundry/java-buildpack)
-[![Dependency Status](https://gemnasium.com/cloudfoundry/java-buildpack.svg)](https://gemnasium.com/cloudfoundry/java-buildpack)
-[![Code Climate](https://codeclimate.com/repos/5224adaec7f3a3415107004c/badges/bc49f7d7f8dfc47057c8/gpa.svg)](https://codeclimate.com/repos/5224adaec7f3a3415107004c/feed)
-[![Code Climate](https://codeclimate.com/repos/5224adaec7f3a3415107004c/badges/bc49f7d7f8dfc47057c8/coverage.svg)](https://codeclimate.com/repos/5224adaec7f3a3415107004c/feed)
+# Cloud Foundry WebLogic Buildpack
+[![Build Status](https://travis-ci.org/pivotal-cf/weblogic-buildpack.svg?branch=master)](https://travis-ci.org/pivotal-cf/weblogic-buildpack)
+[![Dependency Status](https://gemnasium.com/pivotal-cf/weblogic-buildpack.svg)](https://gemnasium.com/pivotal-cf/weblogic-buildpack)
+[![Code Climate](https://codeclimate.com/github/pivotal-cf/weblogic-buildpack/badges/gpa.svg)](https://codeclimate.com/github/pivotal-cf/weblogic-buildpack/feed)
+[![Code Climate](https://codeclimate.com/github/pivotal-cf/weblogic-buildpack/badges/coverage.svg)](https://codeclimate.com/github/pivotal-cf/weblogic-buildpack/feed)
 
-The `java-buildpack` is a [Cloud Foundry][] buildpack for running JVM-based applications.  It is designed to run many JVM-based applications ([Grails][], [Groovy][], Java Main, [Play Framework][], [Spring Boot][], and Servlet) with no additional configuration, but supports configuration of the standard components, and extension to add custom components.
+The `weblogic-buildpack` is a custom [Cloud Foundry] buildpack, based on a fork of the [Java-Buildpack][], for running JEE applications with WebLogic Server as container on Cloud Foundry.
+
+The [Java-Buildpack] itself is a [Cloud Foundry][] buildpack for running JVM-based applications.  It is designed to run many JVM-based applications ([Grails][], [Groovy][], Java Main, [Play Framework][], [Spring Boot][], and Servlet) with no additional configuration, but supports configuration of the standard components, and extension to add custom components.
 
 ## Usage
+
 To use this buildpack specify the URI of the repository when pushing an application to Cloud Foundry:
 
 ```bash
-cf push <APP-NAME> -p <ARTIFACT> -b https://github.com/cloudfoundry/java-buildpack.git
+cf push <APP-NAME> -p <ARTIFACT> -b https://github.com/pivotal-cf/weblogic-buildpack.git
 ```
-
-## Examples
-The following are _very_ simple examples for deploying the artifact types that we support.
-
-* [Embedded web server](docs/example-embedded-web-server.md)
-* [Grails](docs/example-grails.md)
-* [Groovy](docs/example-groovy.md)
-* [Java Main](docs/example-java_main.md)
-* [Play Framework](docs/example-play_framework.md)
-* [Servlet](docs/example-servlet.md)
-* [Spring Boot CLI](docs/example-spring_boot_cli.md)
 
 ## Configuration and Extension
 The buildpack supports extension through the use of Git repository forking. The easiest way to accomplish this is to use [GitHub's forking functionality][] to create a copy of this repository.  Make the required extension changes in the copy of the repository. Then specify the URL of the new repository when pushing Cloud Foundry applications. If the modifications are generally applicable to the Cloud Foundry community, please submit a [pull request][] with the changes.
@@ -50,7 +42,7 @@ To learn how to configure various properties of the buildpack, follow the "Confi
 	* [Ratpack](docs/container-ratpack.md)
 	* [Spring Boot](docs/container-spring_boot.md)
 	* [Spring Boot CLI](docs/container-spring_boot_cli.md) ([Configuration](docs/container-spring_boot_cli.md#configuration))
-	* [Tomcat](docs/container-tomcat.md) ([Configuration](docs/container-tomcat.md#configuration))
+	* [WebLogic](docs/container-wls.md) ([Configuration](docs/container-wls.md#configuration))
 * Standard Frameworks
 	* [AppDynamics Agent](docs/framework-app_dynamics_agent.md) ([Configuration](docs/framework-app_dynamics_agent.md#configuration))
 	* [DynaTrace Agent](docs/framework-dyna_trace_agent.md) ([Configuration](docs/framework-dyna_trace_agent.md#configuration))
@@ -94,27 +86,27 @@ The online package is a version of the buildpack that is as minimal as possible 
 bundle install
 bundle exec rake package
 ...
-Creating build/java-buildpack-cfd6b17.zip
+Creating build/weblogic-buildpack-cfd6b17.zip
 ```
 
 ### Offline Package
-The offline package is a version of the buildpack designed to run without access to a network.  It packages the latest version of each dependency (as configured in the [`config/` directory][]) and [disables `remote_downloads`][]. This package is about 180M in size.  To create the offline package, use the `OFFLINE=true` argument:
+The offline package is a version of the buildpack designed to run without access to a network.  It packages the latest version of each dependency (as configured in the [`config/` directory][]) and [disables `remote_downloads`][]. This package is about 380M in size.  To create the offline package, use the `OFFLINE=true` argument:
 
-```bash
+```
+bash
 bundle install
 bundle exec rake package OFFLINE=true
 ...
-Creating build/java-buildpack-offline-cfd6b17.zip
+Creating build/weblogic-buildpack-offline-cfd6b17.zip
 ```
 
 ### Package Versioning
 Keeping track of different versions of the buildpack can be difficult.  To help with this, the rake `package` task puts a version discriminator in the name of the created package file.  The default value for this discriminator is the current Git hash (e.g. `cfd6b17`).  To change the version when creating a package, use the `VERSION=<VERSION>` argument:
-
 ```bash
 bundle install
 bundle exec rake package VERSION=2.1
 ...
-Creating build/java-buildpack-2.1.zip
+Creating build/weblogic-buildpack-2.1.zip
 ```
 
 ## Running Tests
@@ -133,7 +125,6 @@ bundle exec rake
 ## License
 This buildpack is released under version 2.0 of the [Apache License][].
 
-[`config/` directory]: config
 [Apache License]: http://www.apache.org/licenses/LICENSE-2.0
 [Cloud Foundry]: http://www.cloudfoundry.com
 [contributor guidelines]: CONTRIBUTING.md
@@ -142,8 +133,17 @@ This buildpack is released under version 2.0 of the [Apache License][].
 [GitHub's forking functionality]: https://help.github.com/articles/fork-a-repo
 [Grails]: http://grails.org
 [Groovy]: http://groovy.codehaus.org
+[Installing Cloud Foundry on Vagrant]: http://blog.cloudfoundry.com/2013/06/27/installing-cloud-foundry-on-vagrant/
 [Play Framework]: http://www.playframework.com
 [pull request]: https://help.github.com/articles/using-pull-requests
 [Pull requests]: http://help.github.com/send-pull-requests
-[Running Cloud Foundry locally]: http://docs.cloudfoundry.org/deploying/run-local.html
 [Spring Boot]: http://projects.spring.io/spring-boot/
+[java-buildpack]: http://github.com/cloudfoundry/java-buildpack/
+[Oracle WebLogic Application Server]: http://www.oracle.com/technetwork/middleware/weblogic/overview/index.html
+[bosh-lite]: http://github.com/cloudfoundry/bosh-lite/
+[Pivotal Web Services Marketplace]: http://docs.run.pivotal.io/marketplace/services/
+[User Provided Services]: http://docs.run.pivotal.io/devguide/services/user-provided.html
+[Linux 64 bit JRE]: http://javadl.sun.com/webapps/download/AutoDL?BundleId=83376
+[WebLogic Server]: http://www.oracle.com/technetwork/middleware/weblogic/downloads/index.html
+[limited footprint]: http://docs.oracle.com/middleware/1212/wls/START/overview.htm#START234
+[syslog drain endpoint like Splunk]: http://www.youtube.com/watch?v=rk_K_AAHEEI
