@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # Cloud Foundry Java Buildpack
-# Copyright 2013 the original author or authors.
+# Copyright 2013-2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -47,6 +47,12 @@ describe JavaBuildpack::Container::SpringBootCLI do
 
   it 'does not detect if one of the Groovy files has a shebang',
      app_fixture: 'container_groovy_shebang' do
+
+    expect(component.detect).to be_nil
+  end
+
+  it 'does not detect Logback Groovy files',
+     app_fixture: 'container_groovy_logback' do
 
     expect(component.detect).to be_nil
   end

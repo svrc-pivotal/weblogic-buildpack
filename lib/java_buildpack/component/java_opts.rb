@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # Cloud Foundry Java Buildpack
-# Copyright 2013 the original author or authors.
+# Copyright 2013-2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ module JavaBuildpack
         @droplet_root = droplet_root
       end
 
-      # Adds a +javaagent+ entry to the +JAVA_OPTS+.  Prepends +$PWD+ to the path (relative to the droplet root) to
+      # Adds a +javaagent+ entry to the +JAVA_OPTS+. Prepends +$PWD+ to the path (relative to the droplet root) to
       # ensure that the path is always accurate.
       #
       # @param [Pathname] path the path to the +javaagent+ JAR
@@ -56,7 +56,27 @@ module JavaBuildpack
       end
       
 
-      # Adds a system property to the +JAVA_OPTS+.  Ensures that the key is prepended with +-D+.  If the value is a
+      # Adds an +agentpath+ entry to the +JAVA_OPTS+. Prepends +$PWD+ to the path (relative to the droplet root) to
+      # ensure that the path is always accurate.
+      #
+      # @param [Pathname] path the path to the +native+ +agent+
+      # @return [JavaOpts]     +self+ for chaining
+      def add_agentpath(path)
+        self << "-agentpath:#{qualify_path path}"
+        self
+      end
+
+      # Adds a +bootclasspath/p+ entry to the +JAVA_OPTS+. Prepends +$PWD+ to the path (relative to the droplet root) to
+      # ensure that the path is always accurate.
+      #
+      # @param [Pathname] path the path to the +javaagent+ JAR
+      # @return [JavaOpts]     +self+ for chaining
+      def add_bootclasspath_p(path)
+        self << "-Xbootclasspath/p:#{qualify_path path}"
+        self
+      end
+
+      # Adds a system property to the +JAVA_OPTS+. Ensures that the key is prepended with +-D+.  If the value is a
       # +Pathname+, then prepends +$PWD+ to the path (relative to the droplet root) to ensure that the path is always
       # accurate.  Otherwise, uses the value as-is.
       #
@@ -68,7 +88,7 @@ module JavaBuildpack
         self
       end
 
-      # Adds an option to the +JAVA_OPTS+.  Nothing is prepended to the key.  If the value is a +Pathname+, then
+      # Adds an option to the +JAVA_OPTS+. Nothing is prepended to the key.  If the value is a +Pathname+, then
       # prepends +$PWD+ to the path (relative to the droplet root) to ensure that the path is always accurate.
       # Otherwise, uses the value as-is.
       #
