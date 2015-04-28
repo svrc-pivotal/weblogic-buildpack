@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # Cloud Foundry Java Buildpack
-# Copyright (c) 2013 the original author or authors.
+# Copyright 2013-2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ module JavaBuildpack
           java_binary      = Dir.glob("#{@droplet.root}" + '/**/' + JAVA_BINARY, File::FNM_DOTMATCH)[0]
           configure_script = Dir.glob("#{@wls_sandbox_root}" + '/**/' + WLS_CONFIGURE_SCRIPT)[0]
 
-          @java_home = File.dirname(java_binary) + '/..'
+          @java_home        = File.dirname(java_binary) + '/..'
           @wls_install_path = File.dirname(configure_script)
 
           system "/bin/chmod +x #{configure_script}"
@@ -101,8 +101,8 @@ module JavaBuildpack
         def install_using_jar_or_binary(install_binary_file)
           print_warnings
 
-          java_binary      = Dir.glob("#{@droplet.root}" + '/**/' + JAVA_BINARY, File::FNM_DOTMATCH)[0]
-          @java_home  = File.dirname(java_binary) + '/..'
+          java_binary       = Dir.glob("#{@droplet.root}" + '/**/' + JAVA_BINARY, File::FNM_DOTMATCH)[0]
+          @java_home        = File.dirname(java_binary) + '/..'
 
           ## The jar install of weblogic does not like hidden directories in its install path like .java-buildpack
           ## [VALIDATION] [ERROR]:INST-07004: Oracle Home location contains one or more invalid characters
@@ -153,8 +153,8 @@ module JavaBuildpack
 
           # Switch to Bash as default Bourne script execution fails for those with if [[ ...]] conditions
           # when configure.sh script tries to check for MW_HOME/BEA_HOME...
-          bourne_shell_script_marker = '#!/bin/sh'
-          bash_shell_script_marker   = '#!/bin/bash'
+          bourne_shell_script_marker    = '#!/bin/sh'
+          bash_shell_script_marker      = '#!/bin/bash'
 
           new_variables_insert = "#{bash_shell_script_marker}\n"
           new_variables_insert << "#{updated_java_home_entry}\n"
@@ -194,10 +194,10 @@ module JavaBuildpack
           # fine if its foo.jar or anything simpler.
           # So, create a temporary link to the jar with a simpler name and then run the install..
           if install_binary_file[/\.jar/]
-            new_binary_path = '/tmp/wls_tmp_installer.jar'
+            new_binary_path      = '/tmp/wls_tmp_installer.jar'
             install_command_args = " #{java_binary} -Djava.security.egd=file:/dev/./urandom -jar #{new_binary_path} "
           else
-            new_binary_path = '/tmp/wls_tmp_installer.bin'
+            new_binary_path      = '/tmp/wls_tmp_installer.bin'
             install_command_args = " #{new_binary_path} -J-Djava.security.egd=file:/dev/./urandom "
           end
 
@@ -211,7 +211,7 @@ module JavaBuildpack
           install_post_args = " -silent -responseFile #{wls_install_response_file_target}"
           install_post_args << " -invPtrLoc #{ora_install_inventory_target}"
 
-          install_command = install_pre_args + install_command_args +  install_post_args
+          install_command = install_pre_args + install_command_args + install_post_args
 
           install_command
         end
@@ -246,7 +246,7 @@ module JavaBuildpack
             java_binary_locations = Dir.glob("/Library/Java/JavaVirtualMachines/**/#{JAVA_BINARY}")
             java_binary_locations.each do |java_binary_candidate|
               # The full installs have $JAVA_HOME/jre/bin/java path
-              java_home =  File.dirname(java_binary_candidate) + '/..' if java_binary_candidate[/jdk1.7/]
+              java_home = File.dirname(java_binary_candidate) + '/..' if java_binary_candidate[/jdk1.7/]
             end
             log_and_print("Warning!!! Using JAVA_HOME at #{java_home}")
           end

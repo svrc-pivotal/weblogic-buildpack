@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # Cloud Foundry Java Buildpack
-# Copyright 2013 the original author or authors.
+# Copyright 2013-2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ require 'fileutils'
 require 'java_buildpack/component/versioned_dependency_component'
 require 'java_buildpack/jre'
 require 'java_buildpack/jre/memory/openjdk_memory_heuristic_factory'
+require 'java_buildpack/util/tokenized_version'
 
 module JavaBuildpack
   module Jre
@@ -65,15 +66,26 @@ module JavaBuildpack
 
       KEY_MEMORY_SIZES = 'memory_sizes'.freeze
 
-      private_constant :KEY_MEMORY_HEURISTICS, :KEY_MEMORY_SIZES
+      VERSION_8 = JavaBuildpack::Util::TokenizedVersion.new('1.8.0').freeze
+
+      private_constant :KEY_MEMORY_HEURISTICS, :KEY_MEMORY_SIZES, :VERSION_8
 
       def killjava
         @droplet.sandbox + 'bin/killjava.sh'
       end
 
       def memory
-        sizes      = @configuration[KEY_MEMORY_SIZES] || {}
-        heuristics = @configuration[KEY_MEMORY_HEURISTICS] || {}
+        sizes      = @configuration[KEY_MEMORY_SIZES] ? @configuration[KEY_MEMORY_SIZES].clone : {}
+        heuristics = @configuration[KEY_MEMORY_HEURISTICS] ? @configuration[KEY_MEMORY_HEURISTICS].clone : {}
+
+        if @version < VERSION_8
+          heuristics.delete 'metaspace'
+          sizes.delete 'metaspace'
+        else
+          heuristics.delete 'permgen'
+          sizes.delete 'permgen'
+        end
+
         OpenJDKMemoryHeuristicFactory.create_memory_heuristic(sizes, heuristics, @version).resolve
       end
 

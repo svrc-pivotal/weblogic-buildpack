@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # Cloud Foundry Java Buildpack
-# Copyright 2013 the original author or authors.
+# Copyright 2013-2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ describe JavaBuildpack::Container::TomcatInstance do
     component.compile
     expect((sandbox + 'conf/context.xml').read).to match(/<Context allowLinking='true'>/)
     expect((sandbox + 'conf/server.xml').read)
-      .to match(/<Listener className='org.apache.catalina.core.JasperListener'\/>/)
+      .to match(%r{<Listener className='org.apache.catalina.core.JasperListener'/>})
   end
 
   context do
@@ -66,9 +66,9 @@ describe JavaBuildpack::Container::TomcatInstance do
        cache_fixture: 'stub-tomcat.tar.gz' do
 
       component.compile
-      expect((sandbox + 'conf/context.xml').read).to match(/<Context>[\s]*<Resources allowLinking='true'\/>/)
+      expect((sandbox + 'conf/context.xml').read).to match(%r{<Context>[\s]*<Resources allowLinking='true'/>})
       expect((sandbox + 'conf/server.xml').read)
-        .not_to match(/<Listener className='org.apache.catalina.core.JasperListener'\/>/)
+        .not_to match(%r{<Listener className='org.apache.catalina.core.JasperListener'/>})
     end
   end
 

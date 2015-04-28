@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # Cloud Foundry Java Buildpack
-# Copyright 2013 the original author or authors.
+# Copyright 2013-2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,19 +34,16 @@ module JavaBuildpack
       def release
         credentials = @application.services.find_service(FILTER)['credentials']
         java_opts   = @droplet.java_opts
+        java_opts.add_javaagent(@droplet.sandbox + 'javaagent.jar')
 
-        java_opts
-          .add_javaagent(@droplet.sandbox + 'javaagent.jar')
-          .add_system_property('appdynamics.agent.applicationName', "'#{application_name}'")
-          .add_system_property('appdynamics.agent.tierName', "'#{tier_name(credentials)}'")
-          .add_system_property('appdynamics.agent.nodeName',
-                               "$(expr \"$VCAP_APPLICATION\" : '.*instance_index[\": ]*\\([[:digit:]]*\\).*')")
-
-        account_access_key(java_opts, credentials)
-        account_name(java_opts, credentials)
-        host_name(java_opts, credentials)
-        port(java_opts, credentials)
-        ssl_enabled(java_opts, credentials)
+        application_name java_opts, credentials
+        tier_name java_opts, credentials
+        node_name java_opts, credentials
+        account_access_key java_opts, credentials
+        account_name java_opts, credentials
+        host_name java_opts, credentials
+        port java_opts, credentials
+        ssl_enabled java_opts, credentials
       end
 
       protected
@@ -62,12 +59,10 @@ module JavaBuildpack
 
       private_constant :FILTER
 
-      def tier_name(credentials)
-        credentials.key?('tier-name') ? credentials['tier-name'] : @configuration['default_tier_name']
-      end
-
-      def application_name
-        @application.details['application_name']
+      def application_name(java_opts, credentials)
+        name = credentials['application-name'] || @configuration['default_application_name'] ||
+          @application.details['application_name']
+        java_opts.add_system_property('appdynamics.agent.applicationName', "#{name}")
       end
 
       def account_access_key(java_opts, credentials)
@@ -86,6 +81,11 @@ module JavaBuildpack
         java_opts.add_system_property 'appdynamics.controller.hostName', host_name
       end
 
+      def node_name(java_opts, credentials)
+        name = credentials['node-name'] || @configuration['default_node_name']
+        java_opts.add_system_property('appdynamics.agent.nodeName', "#{name}")
+      end
+
       def port(java_opts, credentials)
         port = credentials['port']
         java_opts.add_system_property 'appdynamics.controller.port', port if port
@@ -94,6 +94,11 @@ module JavaBuildpack
       def ssl_enabled(java_opts, credentials)
         ssl_enabled = credentials['ssl-enabled']
         java_opts.add_system_property 'appdynamics.controller.ssl.enabled', ssl_enabled if ssl_enabled
+      end
+
+      def tier_name(java_opts, credentials)
+        name = credentials['tier-name'] || @configuration['default_tier_name']
+        java_opts.add_system_property('appdynamics.agent.tierName', "#{name}")
       end
 
     end

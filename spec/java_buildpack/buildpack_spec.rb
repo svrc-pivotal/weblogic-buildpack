@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # Cloud Foundry Java Buildpack
-# Copyright 2013 the original author or authors.
+# Copyright 2013-2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,10 +45,10 @@ describe JavaBuildpack::Buildpack do
     allow(JavaBuildpack::Util::ConfigurationUtils).to receive(:load).and_call_original
     allow(JavaBuildpack::Util::ConfigurationUtils)
       .to receive(:load).with('components').and_return(
-            'containers' => ['Test::StubContainer1', 'Test::StubContainer2'],
-            'frameworks' => ['Test::StubFramework1', 'Test::StubFramework2'],
-            'jres'       => ['Test::StubJre1', 'Test::StubJre2']
-          )
+        'containers' => ['Test::StubContainer1', 'Test::StubContainer2'],
+        'frameworks' => ['Test::StubFramework1', 'Test::StubFramework2'],
+        'jres'       => ['Test::StubJre1', 'Test::StubJre2']
+      )
 
     allow(Test::StubContainer1).to receive(:new).and_return(stub_container1)
     allow(Test::StubContainer2).to receive(:new).and_return(stub_container2)

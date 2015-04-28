@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # Cloud Foundry Java Buildpack
-# Copyright (c) 2013 the original author or authors.
+# Copyright 2013-2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -235,8 +235,8 @@ module JavaBuildpack
             user_passwd_tokens = given_jdbc_url[start_index..end_index].split(':')
 
             # Move the indices either before or after the markers
-            start_index        -= 3
-            end_index          += 2
+            start_index -= 3
+            end_index += 2
 
             uri = jdbc_datasource_config['uri']
             if uri[/^oracle/i]
@@ -357,11 +357,11 @@ module JavaBuildpack
         def self.matcher(jdbc_service, filter)
           filter = Regexp.new(filter) unless filter.is_a?(Regexp)
 
-          jdbc_service['name'] =~ filter || jdbc_service['label'] =~ filter   \
-           || jdbc_service['driver'] =~ filter                                \
-           || jdbc_service['jdbcUrl'] =~ filter                               \
-           || jdbc_service['uri'] =~ filter                                   \
-           || (jdbc_service['tags'].any? { |tag| tag =~ filter } if jdbc_service['tags'])
+          jdbc_service['name'] =~ filter || jdbc_service['label'] =~ filter || \
+          jdbc_service['driver'] =~ filter || \
+          jdbc_service['jdbcUrl'] =~ filter || \
+          jdbc_service['uri'] =~ filter || \
+          (jdbc_service['tags'].any? { |tag| tag =~ filter } if jdbc_service['tags'])
         end
 
         # Log the message

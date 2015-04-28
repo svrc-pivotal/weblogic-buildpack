@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # Cloud Foundry Java Buildpack
-# Copyright (c) 2013 the original author or authors.
+# Copyright 2013-2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@ module JavaBuildpack
 
         # return true if the application should be run on Weblogic
         def self.detect(application)
-          search_path = (application.root).to_s + '/**/weblogic*xml'
+          search_path        = (application.root).to_s + '/**/weblogic*xml'
           wls_config_present = Dir.glob(search_path).length > 0
 
-          is_ear_app = app_inf?(application)
-          is_web_app = web_inf?(application)
+          is_ear_app                  = app_inf?(application)
+          is_web_app                  = web_inf?(application)
           app_wls_config_cache_exists = (application.root + APP_WLS_CONFIG_CACHE_DIR).exist?
 
           unless app_wls_config_cache_exists
@@ -44,8 +44,8 @@ module JavaBuildpack
                           ' or weblogic deployment descriptors within App')
           log("  Does #{APP_WLS_CONFIG_CACHE_DIR} folder exist under root of the App? : #{app_wls_config_cache_exists}")
 
-          result = (wls_config_present  || app_wls_config_cache_exists || is_web_app || is_ear_app) \
-                        && !JavaBuildpack::Util::JavaMainUtils.main_class(application)
+          result = (wls_config_present || app_wls_config_cache_exists || is_web_app || is_ear_app) && \
+                   !JavaBuildpack::Util::JavaMainUtils.main_class(application)
 
           unless result
             log "WLS Buildpack Detection on App: #{application.root} failed!!!"

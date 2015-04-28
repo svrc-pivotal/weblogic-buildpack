@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # Cloud Foundry Java Buildpack
-# Copyright 2013 the original author or authors.
+# Copyright 2013-2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ describe JavaBuildpack::Framework::NewRelicAgent do
       expect(java_opts).to include("-javaagent:$PWD/.java-buildpack/new_relic_agent/new_relic_agent-#{version}.jar")
       expect(java_opts).to include('-Dnewrelic.home=$PWD/.java-buildpack/new_relic_agent')
       expect(java_opts).to include('-Dnewrelic.config.license_key=test-license-key')
-      expect(java_opts).to include("-Dnewrelic.config.app_name='test-application-name'")
+      expect(java_opts).to include('-Dnewrelic.config.app_name=test-application-name')
       expect(java_opts).to include('-Dnewrelic.config.log_file_path=$PWD/.java-buildpack/new_relic_agent/logs')
     end
 

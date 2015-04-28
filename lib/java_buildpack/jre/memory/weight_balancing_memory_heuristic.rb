@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # Cloud Foundry Java Buildpack
-# Copyright 2013 the original author or authors.
+# Copyright 2013-2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -234,9 +234,9 @@ module JavaBuildpack
       end
 
       def switches(buckets)
-        buckets.map do |type, bucket|
+        buckets.flat_map do |type, bucket|
           @java_opts[type][bucket.size] if bucket.size && bucket.size > 0 && @java_opts.key?(type)
-        end.flatten(1).compact
+        end.compact
       end
 
     end
