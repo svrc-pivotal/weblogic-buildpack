@@ -116,7 +116,7 @@ module JavaBuildpack
         ].flatten.compact.join(' ')
       end
 
-      protected
+      private
 
       # The unique identifier of the component, incorporating the version of the dependency (e.g. +wls=12.1.2+)
       #

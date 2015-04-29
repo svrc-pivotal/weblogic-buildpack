@@ -609,7 +609,7 @@ But the name of the domain, server and user credentials would be pulled from App
       ```
 
 Setting the  **`prefer_app_config`** to **`true`** would imply the app bundled configs (under .wls of the App Root) would always be used for final domain creation.
-Setting the parameter to **`false`** would imply the buildpack's configurations (under resources\wls\) have higher precedence over the app bundled configs and be used to configure the domain.
+Setting the parameter to **`false`** would imply the buildpack's configurations (under resources/wls/) have higher precedence over the app bundled configs and be used to configure the domain.
 The Application supplied domain config file would be used for names of the domain, server, user credentials.
 
 For users starting to experiment with the buildpack and still tweaking and reconfiguring the generated domain, **`prefer_app_config` should be enabled so they can experiment more easily**.
@@ -735,7 +735,7 @@ Cloning into '/tmp/buildpacks/weblogic-buildpack'...
  Then run `cf push` again followed by `cf logs --recent` to get the full details for the cause of the failure.
 
 ```
-hammerkop:workspace sparameswaran$ cf set-env test-appJBP_LOG_LEVEL debug
+hammerkop:workspace sparameswaran$ cf set-env test-app JBP_LOG_LEVEL debug
 Setting env variable 'JBP_LOG_LEVEL' to 'debug' for app test-app in org sabha / space sabha as admin...
 OK
 TIP: Use 'cf push' to ensure your env variable changes take effect
