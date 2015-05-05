@@ -19,7 +19,6 @@ require 'java_buildpack/component/versioned_dependency_component'
 require 'java_buildpack/framework'
 require 'java_buildpack/util/qualify_path'
 
-
 module JavaBuildpack
   module Framework
 
@@ -39,13 +38,15 @@ module JavaBuildpack
         FileUtils.rm_rf(@droplet.sandbox + 'org')
         FileUtils.rm_rf(@droplet.sandbox + 'META_INF')
         FileUtils.rm_f(@droplet.sandbox + 'YouShouldNotHaveUnzippedMe.txt')
-        true       
+        true
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
         @droplet.java_opts
-          .add_agentpath(agent_dir + "libdtagent.so", {name: application_name + "_" + profile_name, server: server})
+          .add_agentpath_with_props(agent_dir + 'libdtagent.so',
+                                    name: application_name + '_' + profile_name,
+                                    server: server)
       end
 
       protected
@@ -68,7 +69,7 @@ module JavaBuildpack
       def profile_name
         @application.services.find_service(FILTER)['credentials']['profile'] || 'Monitoring'
       end
-      
+
       def agent_dir
         @droplet.sandbox + 'home/agent/lib64'
       end
@@ -76,11 +77,11 @@ module JavaBuildpack
       def logs_dir
         @droplet.sandbox + 'home/log'
       end
-          
+
       def home_dir
         @droplet.sandbox + 'home'
       end
-      
+
       def server
         @application.services.find_service(FILTER)['credentials']['server']
       end
