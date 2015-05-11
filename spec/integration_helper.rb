@@ -38,7 +38,7 @@ shared_context 'integration_helper' do
   end
 
   before do
-    rewrite_repository_root(buildpack_dir + 'config/oracle_jre.yml', ENV['ORACLE_JRE_DOWNLOAD'])
+    rewrite_jre_repository_root(buildpack_dir + 'config/oracle_jre.yml', ENV['ORACLE_JRE_DOWNLOAD'])
     rewrite_repository_root(buildpack_dir + 'config/weblogic.yml', ENV['WEBLOGIC_DOWNLOAD'])
   end
 
@@ -58,6 +58,14 @@ shared_context 'integration_helper' do
   end
 
   private
+
+  def rewrite_jre_repository_root(file, new_repository_root)
+    config = YAML.load_file(file)
+    config['jre']['repository_root'] = new_repository_root
+    File.open(file, 'w') do |open_file|
+      open_file.write config.to_yaml
+    end
+  end
 
   def rewrite_repository_root(file, new_repository_root)
     config = YAML.load_file(file)
