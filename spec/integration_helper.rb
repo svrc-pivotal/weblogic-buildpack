@@ -42,8 +42,12 @@ shared_context 'integration_helper' do
     rewrite_repository_root(buildpack_dir + 'config/weblogic.yml', ENV['WEBLOGIC_DOWNLOAD'])
   end
 
-  after do
-    FileUtils.rm_rf buildpack_dir
+  after do |example|
+    if example.metadata[:no_cleanup]
+      puts "Buildpack Directory: #{buildpack_dir}"
+    else
+      FileUtils.rm_rf buildpack_dir
+    end
   end
 
   def run(command)
