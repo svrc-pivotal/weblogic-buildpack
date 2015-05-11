@@ -78,7 +78,8 @@ module JavaBuildpack
 
           load
         else
-          @wls_version, @wls_uri = nil, nil
+          @wls_version = nil
+          @wls_uri = nil
         end
       end
 
