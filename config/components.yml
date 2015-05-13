@@ -23,19 +23,19 @@ containers:
   - "JavaBuildpack::Container::Ratpack"
   - "JavaBuildpack::Container::SpringBoot"
   - "JavaBuildpack::Container::SpringBootCLI"
-#  - "JavaBuildpack::Container::Tomcat"
+# - "JavaBuildpack::Container::Tomcat"
   - "JavaBuildpack::Container::Weblogic"
 
 # In order to use Oracle JREs instead of OpenJDK, you must comment out the OpenJDK line and uncomment the Oracle line.
 # Please see the documentation for more detail.
 jres:
-#  - "JavaBuildpack::Jre::OpenJdkJRE"
+# - "JavaBuildpack::Jre::OpenJdkJRE"
   - "JavaBuildpack::Jre::OracleJRE"
 
 frameworks:
   - "JavaBuildpack::Framework::AppDynamicsAgent"
   - "JavaBuildpack::Framework::DynaTraceAgent"
-  - "JavaBuildpack::Framework::IntroscopeAgent"
+# - "JavaBuildpack::Framework::IntroscopeAgent"
   - "JavaBuildpack::Framework::JavaOpts"
   - "JavaBuildpack::Framework::JrebelAgent"
   - "JavaBuildpack::Framework::MariaDbJDBC"

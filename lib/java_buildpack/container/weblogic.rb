@@ -78,7 +78,8 @@ module JavaBuildpack
 
           load
         else
-          @wls_version, @wls_uri = nil, nil
+          @wls_version = nil
+          @wls_uri = nil
         end
       end
 
@@ -116,7 +117,7 @@ module JavaBuildpack
         ].flatten.compact.join(' ')
       end
 
-      protected
+      private
 
       # The unique identifier of the component, incorporating the version of the dependency (e.g. +wls=12.1.2+)
       #
