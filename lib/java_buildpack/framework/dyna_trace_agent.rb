@@ -1,6 +1,6 @@
 # Encoding: utf-8
 # Cloud Foundry Java Buildpack
-# Copyright 2013 the original author or authors.
+# Copyright 2015 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ require 'java_buildpack/util/qualify_path'
 module JavaBuildpack
   module Framework
 
-    # Encapsulates the functionality for enabling zero-touch New Relic support.
+    # Encapsulates the functionality for enabling zero-touch Dynatrace support.
     class DynaTraceAgent < JavaBuildpack::Component::VersionedDependencyComponent
       include JavaBuildpack::Util
 
@@ -32,13 +32,7 @@ module JavaBuildpack
         @droplet.copy_resources
         FileUtils.mkdir(home_dir)
         FileUtils.mv(@droplet.sandbox + 'agent/linux-x86-64/agent', home_dir)
-        FileUtils.rm_rf(@droplet.sandbox + 'agent')
-        FileUtils.rm_rf(@droplet.sandbox + 'init.d')
-        FileUtils.rm_rf(@droplet.sandbox + 'com')
-        FileUtils.rm_rf(@droplet.sandbox + 'org')
-        FileUtils.rm_rf(@droplet.sandbox + 'META_INF')
-        FileUtils.rm_f(@droplet.sandbox + 'YouShouldNotHaveUnzippedMe.txt')
-        true
+        delete_extra_files
       end
 
       # (see JavaBuildpack::Component::BaseComponent#release)
@@ -72,6 +66,15 @@ module JavaBuildpack
 
       def agent_dir
         @droplet.sandbox + 'home/agent/lib64'
+      end
+
+      def delete_extra_files
+        FileUtils.rm_rf(@droplet.sandbox + 'agent')
+        FileUtils.rm_rf(@droplet.sandbox + 'init.d')
+        FileUtils.rm_rf(@droplet.sandbox + 'com')
+        FileUtils.rm_rf(@droplet.sandbox + 'org')
+        FileUtils.rm_rf(@droplet.sandbox + 'META_INF')
+        FileUtils.rm_f(@droplet.sandbox + 'YouShouldNotHaveUnzippedMe.txt')
       end
 
       def logs_dir

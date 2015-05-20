@@ -36,6 +36,7 @@ frameworks:
   - "JavaBuildpack::Framework::AppDynamicsAgent"
   - "JavaBuildpack::Framework::DynaTraceAgent"
 # - "JavaBuildpack::Framework::IntroscopeAgent"
+# - "JavaBuildpack::Framework::DynaTraceAgent"
   - "JavaBuildpack::Framework::JavaOpts"
   - "JavaBuildpack::Framework::JrebelAgent"
   - "JavaBuildpack::Framework::MariaDbJDBC"

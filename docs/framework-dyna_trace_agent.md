@@ -5,9 +5,9 @@ The Cloud Foundry pushed application name is used as the `agent group` in DynaTr
 A system profile may be provided as an optional argument (defaults to `Monitoring`).
 
 **Current Issues:**  
-* The DynaTrace agent slows down app staging and execution significantly by default.  You may want to update your CF deployment manifest to set `default_health_check_timeout` to 180 or more, and execute `cf push -t 180` or more when pushing a DynaTrace-monitored application.
+* The DynaTrace agent slows down app execution significantly at first, but gets faster over time.  You may want to update your CF deployment manifest to set `maximum_health_check_timeout` to 180 or more and/or execute `cf push -t 180` or more when pushing a DynaTrace-monitored application.
 
-* As time progresses, many dead penguins will litter the DynaTrace agent dashboard, as CF launches/disposes application containers.
+* As you `cf push` multiple times, many dead penguins will litter the DynaTrace agent dashboard, as CF launches/disposes application containers.  These can be hidden but will collect in the dynatrace database.
 
 <table>
   <tr>
@@ -59,7 +59,7 @@ TIP: Changes will not apply to existing running applications until they are rest
 ## Configuration
 For general information on configuring the buildpack, refer to [Configuration and Extension][].
 
-The framework can be configured by modifying the [`config/dyna_trace_agent.yml`][] file in the buildpack fork.  The framework uses the [`Repository` utility support][repositories] and so it supports the [version syntax][] defined there.
+The framework can be configured by modifying the [`dyna_trace_agent.yml`][] file in the buildpack fork.  The framework uses the [`Repository` utility support][repositories] and so it supports the [version syntax][] defined there.
 
 | Name | Description
 | ---- | -----------
@@ -71,9 +71,9 @@ The framework can be configured by modifying the [`config/dyna_trace_agent.yml`]
 
 1.  Downloading the DynaTrace agent unix binary (in JAR format) to an HTTP-accesible location
 1.  Uploading an `index.yml` file with a mapping from the version of the agent to its location to the same HTTP-accessible location
-1.  Configuring the [`config/dyna_trace_agent.yml`][] file to point to the root of the repository holding both the index and agent binary
+1.  Configuring the [`dyna_trace_agent.yml`][] file to point to the root of the repository holding both the index and agent binary
 
-Sample **`repository_root`** for dyna_trace_agent.yml (under java-buildpack/config) assuming a bosh-lite setup and a local webserver (e.g. `brew install tomcat7`) on port 8080
+Sample **`repository_root`** for [`dyna_trace_agent.yml`][] (under java-buildpack/config) assuming a bosh-lite setup and a local webserver (e.g. `brew install tomcat7`) on port 8080
 
 ```
 repository_root: "http://files.192.168.50.1.xip.io:8080/fileserver/dynatrace"
@@ -91,7 +91,7 @@ The index.yml at the repository_root location should have a entry matching the D
 Ensure the DynaTrace binary is available at the location indicated by the index.yml referred by the DynaTrace repository_root.
 
 [Configuration and Extension]: ../README.md#configuration-and-extension
-[`config/dyna_trace_agent.yml`]: ../config/dyna_trace_agent.yml
+[`dyna_trace_agent.yml`]: ../config/dyna_trace_agent.yml
 [DynaTrace Service]: https://dynatrace.com
 [repositories]: extending-repositories.md
 [version syntax]: extending-repositories.md#version-syntax-and-ordering
