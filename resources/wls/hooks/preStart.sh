@@ -162,7 +162,7 @@ fi
 
 # Additional jvm arguments
 
-wls_pre_classpath='export PRE_CLASSPATH="REPLACE_DOMAIN_HOME_MARKER/REPLACE_WLS_PRE_JARS_CACHE_DIR_MARKER/*"'
+wls_pre_classpath='export PRE_CLASSPATH="$PWD/.java-buildpack/additional_libraries/*:REPLACE_DOMAIN_HOME_MARKER/REPLACE_WL_PRE_JARS_CACHE_DIR_MARKER/*"'
 wls_post_classpath='export POST_CLASSPATH="REPLACE_DOMAIN_HOME_MARKER/REPLACE_WLS_POST_JARS_CACHE_DIR_MARKER/*"'
 
 export APP_ID_ARGS=" -Dapplication.name=${APP_NAME} -Dapplication.instance-index=${INSTANCE_INDEX} \
