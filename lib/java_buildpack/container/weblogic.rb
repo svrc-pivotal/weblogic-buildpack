@@ -93,6 +93,7 @@ module JavaBuildpack
       def compile
         download_and_install_wls
         configure
+        @droplet.additional_libraries.link_to app_web_inf_lib
 
         # Don't modify context root for wars within Ear as there can be multiple wars.
         # Modify the context root to '/' in case of war
@@ -303,6 +304,10 @@ module JavaBuildpack
       # The root directory of the application being deployed
       def deployed_app_root
         @domain_apps_dir + APP_NAME
+      end
+
+      def app_web_inf_lib
+        web_inf? ? @droplet.root + 'WEB-INF/lib' : @droplet.root + 'APP-INF/lib'
       end
 
       def web_inf?
